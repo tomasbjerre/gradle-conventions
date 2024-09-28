@@ -29,7 +29,8 @@ def getGivenConfigConventionalelease() {
 }
 
 def getEffectiveConfigConventionalelease() {
-	return getGivenConfigConventionalelease() + [
+	def givenConfig = getGivenConfigConventionalelease();
+	return givenConfig + [
 		useShadowJar: !givenConfig.relocate.isEmpty(),
 		tags: givenConfig.tags.tokenize(','),
 		relocate: givenConfig.relocate.tokenize(',')]
@@ -38,7 +39,7 @@ def getEffectiveConfigConventionalelease() {
 logger.info("Conventional Release: Given config: ${getGivenConfigConventionalelease()}")
 logger.info("Conventional Release: Effective config: ${getEffectiveConfigConventionalelease()}")
 
-if (effectiveConfig.useShadowJar) {
+if (getEffectiveConfigConventionalelease().useShadowJar) {
 	project.plugins.apply "com.gradleup.shadow"
 }
 project.plugins.apply 'java-library'
@@ -137,7 +138,7 @@ List<Map> getNexusOpenRepositories(String url, String authString) {
 task nexusCloseAndRelease() {
 	doLast {
 		def authString = "${nexusUsername}:${nexusPassword}".getBytes().encodeBase64().toString()
-		URL urlObj = effectiveConfig.mavenRepositoryUrl.toURL()
+		URL urlObj = getEffectiveConfigConventionalelease().mavenRepositoryUrl.toURL()
 		def baseUrl = urlObj.getProtocol()+"://"+urlObj.getAuthority()+"/"
 		def listStagingUrl = baseUrl + "service/local/staging/profile_repositories"
 		def closeStagingUrl = baseUrl + "service/local/staging/bulk/close"
@@ -240,9 +241,9 @@ task setupNpmJavaRunnerFiles() {
 		copyIfFound("npm-java-runner-package.json", "package.json")
 		ant.replace(file: new File("package.json"), token: "PKG_NAME", value: project.name)
 		ant.replace(file: new File("package.json"), token: "PKG_VERSION", value: version)
-		ant.replace(file: new File("package.json"), token: "PKG_WEBSITE", value: effectiveConfig.website)
-		ant.replace(file: new File("package.json"), token: "PKG_GIT", value: effectiveConfig.vcsUrl)
-		ant.replace(file: new File("package.json"), token: "PKG_AUTHOR", value: effectiveConfig.developerName)
+		ant.replace(file: new File("package.json"), token: "PKG_WEBSITE", value: getEffectiveConfigConventionalelease().website)
+		ant.replace(file: new File("package.json"), token: "PKG_GIT", value: getEffectiveConfigConventionalelease().vcsUrl)
+		ant.replace(file: new File("package.json"), token: "PKG_AUTHOR", value: getEffectiveConfigConventionalelease().developerName)
 		ant.replace(file: new File("package.json"), token: "PKG_DESCRIPTION", value: project.description.replaceAll("[\"']",""))
 	}
 }
@@ -260,7 +261,7 @@ task release(type: GradleBuild) {
 		'publishToMavenLocal',
 	]
 
-	if (effectiveConfig.repoType == "GRADLE") {
+	if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
 		tasks += ["publishPlugins"]
 	} else {
 		tasks += ["publish"]
@@ -272,7 +273,7 @@ task release(type: GradleBuild) {
 		'nexusCloseAndRelease'
 	]
 
-	if (effectiveConfig.repoType == 'COMMAND') {
+	if (getEffectiveConfigConventionalelease().repoType == 'COMMAND') {
 		tasks += [
 			"setupNpmJavaRunnerFiles",
 			"publishNpm"
@@ -280,8 +281,8 @@ task release(type: GradleBuild) {
 	}
 }
 
-if (effectiveConfig.useShadowJar) {
-	effectiveConfig.relocate.each { it ->
+if (getEffectiveConfigConventionalelease().useShadowJar) {
+	getEffectiveConfigConventionalelease().relocate.each { it ->
 		if (it.isEmpty()) {
 			return
 		}
@@ -312,24 +313,24 @@ if (effectiveConfig.useShadowJar) {
 
 def pomConfig = {
 	scm {
-		url effectiveConfig.website
-		connection effectiveConfig.vcsUrl
-		developerConnection effectiveConfig.vcsUrl
+		url getEffectiveConfigConventionalelease().website
+		connection getEffectiveConfigConventionalelease().vcsUrl
+		developerConnection getEffectiveConfigConventionalelease().vcsUrl
 	}
 
 	licenses {
 		license {
-			name effectiveConfig.licenseName
-			url effectiveConfig.licenseUrl
+			name getEffectiveConfigConventionalelease().licenseName
+			url getEffectiveConfigConventionalelease().licenseUrl
 			distribution 'repo'
 		}
 	}
 
 	developers {
 		developer {
-			id effectiveConfig.developerId
-			name effectiveConfig.developerName
-			email effectiveConfig.developerEmail
+			id getEffectiveConfigConventionalelease().developerId
+			name getEffectiveConfigConventionalelease().developerName
+			email getEffectiveConfigConventionalelease().developerEmail
 		}
 	}
 }
@@ -337,7 +338,7 @@ def pomConfig = {
 publishing {
 	publications {
 		gradleScriptsPublication(MavenPublication) { publication ->
-			if (effectiveConfig.useShadowJar) {
+			if (getEffectiveConfigConventionalelease().useShadowJar) {
 				logger.lifecycle("shadow jar in maven publication")
 				project.shadow.component(publication)
 			} else {
@@ -352,7 +353,7 @@ publishing {
 				def root = asNode()
 				root.appendNode('description', project.description.replaceAll("[\"']",""))
 				root.appendNode('name', project.name)
-				root.appendNode('url', effectiveConfig.website)
+				root.appendNode('url', getEffectiveConfigConventionalelease().website)
 				root.appendNode('inceptionYear', new Date().getYear() + 1900)
 				root.children().last() + pomConfig
 			}
@@ -364,7 +365,7 @@ publishing {
 			}
 		}
 
-		if (effectiveConfig.useShadowJar) {
+		if (getEffectiveConfigConventionalelease().useShadowJar) {
 			logger.lifecycle("shadow jar in maven publication")
 			shadow(MavenPublication) { publication ->
 				project.shadow.component(publication)
@@ -379,7 +380,7 @@ publishing {
 					def root = asNode()
 					root.appendNode('description', project.description.replaceAll("[\"']",""))
 					root.appendNode('name', project.name)
-					root.appendNode('url', effectiveConfig.website)
+					root.appendNode('url', getEffectiveConfigConventionalelease().website)
 					root.appendNode('inceptionYear', new Date().getYear() + 1900)
 					root.children().last() + pomConfig
 				}
@@ -395,17 +396,17 @@ publishing {
 
 	repositories {
 		maven {
-			name = effectiveConfig.mavenRepositoryName
+			name = getEffectiveConfigConventionalelease().mavenRepositoryName
 			credentials(PasswordCredentials)
-			url = effectiveConfig.mavenRepositoryUrl
+			url = getEffectiveConfigConventionalelease().mavenRepositoryUrl
 		}
 	}
 }
 
 signing {
-	required { effectiveConfig.sign && gradle.taskGraph.hasTask("publish") }
+	required { getEffectiveConfigConventionalelease().sign && gradle.taskGraph.hasTask("publish") }
 	sign publishing.publications.gradleScriptsPublication
-	if (effectiveConfig.useShadowJar) {
+	if (getEffectiveConfigConventionalelease().useShadowJar) {
 		sign publishing.publications.shadow
 	}
 }
@@ -428,14 +429,14 @@ tasks.withType(Sign) { signTask ->
 /**
  * GRADLE
  */
-if (effectiveConfig.repoType == "GRADLE") {
+if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
 	dependencies {
 		implementation gradleApi()
 	}
 
 	def pluginId = (project.group + '.' + project.name)
 			.replaceAll("[\"']","")
-	if (effectiveConfig.stripGradlePluginSuffix) {
+	if (getEffectiveConfigConventionalelease().stripGradlePluginSuffix) {
 		pluginId = pluginId.replaceAll(/-gradle-plugin$/,"")
 	}
 	def displayNameValue = (name.substring(0, 1).toUpperCase() + name.substring(1))
@@ -443,17 +444,17 @@ if (effectiveConfig.repoType == "GRADLE") {
 			.replaceAll("[\"']","")
 	logger.lifecycle("pluginId ${pluginId} displayName ${displayNameValue}")
 	gradlePlugin {
-		website = effectiveConfig.website
-		vcsUrl = effectiveConfig.vcsUrl
+		website = getEffectiveConfigConventionalelease().website
+		vcsUrl = getEffectiveConfigConventionalelease().vcsUrl
 		description = project.description.replaceAll("[\"']","")
 
 		plugins {
 			matching { it.name.startsWith(project.group) }.configureEach {
-				tags.set(effectiveConfig.tags)
+				tags.set(getEffectiveConfigConventionalelease().tags)
 				description = project.description.replaceAll("[\"']","")
 				id = pluginId
 				displayName = displayNameValue
-				implementationClass = effectiveConfig.implementationClass
+				implementationClass = getEffectiveConfigConventionalelease().implementationClass
 			}
 		}
 	}
