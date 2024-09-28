@@ -1,20 +1,15 @@
 # Conventional Release Gradle Pluigin
 
-Bundle of plugins and some Gradle DSL that can publish:
+[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/se.bjurr.gradle.conventional-release)](https://plugins.gradle.org/plugin/se.bjurr.gradle.conventional-release)
 
-- JAR:s to Maven Central
-- Command line tools to Maven Central and NPM
-- Gradle plugins to Maven Central and Gradle Plugin Portal
+Bundle of plugins and some Gradle DSL that can:
+
 - Get version from [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
+- Tag commit
 - Update `CHANGELOG.md`
-
-```groovy
-plugins {
-    id 'se.bjurr.gradle.conventional-release' version 'X'
-}
-```
-
-<https://plugins.gradle.org/plugin/se.bjurr.gradle.conventional-release>
+- Publish JAR:s to Maven Central
+- Publish command line tools to Maven Central and NPM
+- Publish Gradle plugins to Gradle Plugin Portal
 
 Run it with:
 
