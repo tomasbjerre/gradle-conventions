@@ -1,13 +1,3 @@
-plugins {
-	id 'com.gradleup.shadow'
-	id 'maven-publish'
-	id 'signing'
-	id 'io.github.gradle-nexus.publish-plugin'
-	id "com.gradle.plugin-publish"
-	id "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
-}
-
-
 def propertyFile = file("$projectDir/gradle.properties")
 def gradleProps = new Properties()
 propertyFile.withReader { gradleProps.load(it) }
@@ -45,6 +35,14 @@ def effectiveConfig = givenConfig + [
 logger.lifecycle("Given config: ${givenConfig}")
 logger.info("Effective config: ${effectiveConfig}")
 
+if (effectiveConfig.useShadowJar) {
+	project.plugins.apply "com.gradleup.shadow"
+}
+project.plugins.apply 'maven-publish'
+project.plugins.apply 'signing'
+project.plugins.apply "io.github.gradle-nexus.publish-plugin"
+project.plugins.apply "com.gradle.plugin-publish"
+project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 
 def runCommand(args, int attempts = 5) {
 	logger.lifecycle("Executing ${args.join(' ')}")
@@ -273,32 +271,31 @@ task release(type: GradleBuild) {
 	}
 }
 
-effectiveConfig.relocate.each { it ->
-	if (it.isEmpty()) {
-		return
-	}
-	def relocateFrom = ""
-	def relocateTo = ""
-	if (it.contains(":")) {
-		relocateFrom = it.split(":")[0]
-		relocateTo = it.split(":")[1]
-	} else {
-		relocateFrom = it
-		relocateTo = (project.group + '.' + project.name + '.' + relocateFrom)
-				.replaceAll('[^a-zA-Z\\.]','')
-	}
-	logger.lifecycle("Relocating ${relocateFrom} to ${relocateTo}")
-	shadowJar {
-		relocate relocateFrom, relocateTo
-	}
-}
-shadowJar {
-	archiveBaseName.set(project.name)
-	archiveClassifier.set('')
-	archiveVersion.set(project.version)
-}
-
 if (effectiveConfig.useShadowJar) {
+	effectiveConfig.relocate.each { it ->
+		if (it.isEmpty()) {
+			return
+		}
+		def relocateFrom = ""
+		def relocateTo = ""
+		if (it.contains(":")) {
+			relocateFrom = it.split(":")[0]
+			relocateTo = it.split(":")[1]
+		} else {
+			relocateFrom = it
+			relocateTo = (project.group + '.' + project.name + '.' + relocateFrom)
+					.replaceAll('[^a-zA-Z\\.]','')
+		}
+		logger.lifecycle("Relocating ${relocateFrom} to ${relocateTo}")
+		shadowJar {
+			relocate relocateFrom, relocateTo
+		}
+	}
+	shadowJar {
+		archiveBaseName.set(project.name)
+		archiveClassifier.set('')
+		archiveVersion.set(project.version)
+	}
 	build.dependsOn shadowJar
 } else {
 	logger.lifecycle("Not including shadow jar.")
