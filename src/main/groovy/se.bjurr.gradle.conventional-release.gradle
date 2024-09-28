@@ -38,11 +38,17 @@ logger.info("Effective config: ${effectiveConfig}")
 if (effectiveConfig.useShadowJar) {
 	project.plugins.apply "com.gradleup.shadow"
 }
+project.plugins.apply 'java-library'
 project.plugins.apply 'maven-publish'
 project.plugins.apply 'signing'
 project.plugins.apply "io.github.gradle-nexus.publish-plugin"
 project.plugins.apply "com.gradle.plugin-publish"
 project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
 
 def runCommand(args, int attempts = 5) {
 	logger.lifecycle("Executing ${args.join(' ')}")
