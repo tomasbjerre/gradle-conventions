@@ -1,39 +1,42 @@
-def propertyFile = file("$projectDir/gradle.properties")
-def gradleProps = new Properties()
-propertyFile.withReader { gradleProps.load(it) }
+def getGivenConfigConventionalelease() {
+	def propertyFile = file("$projectDir/gradle.properties")
+	def gradleProps = new Properties()
+	propertyFile.withReader { gradleProps.load(it) }
+	def givenConfig = [
+		// ---- start of default config ----
+		// repoType: JAR # JAR, GRADLE, COMMAND
+		repoType: gradleProps.getProperty("repoType", "JAR"),
+		// relocate: org:org,com:com # Empty by default
+		relocate: gradleProps.getProperty("relocate", ""),
+		website: gradleProps.getProperty("website", "https://github.com/tomasbjerre/" + project.name),
+		vcsUrl: gradleProps.getProperty("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
+		licenseName: gradleProps.getProperty("licenseName", "The Apache Software License, Version 2.0"),
+		licenseUrl: gradleProps.getProperty("licenseUrl", "http://www.apache.org/licenses/LICENSE-2.0.txt"),
+		developerId: gradleProps.getProperty("developerId", "tomasbjerre"),
+		developerName: gradleProps.getProperty("developerName", "Tomas Bjerre"),
+		developerEmail: gradleProps.getProperty("developerEmail", "tomas.bjerre85@gmail.com"),
+		mavenRepositoryName: gradleProps.getProperty("mavenRepositoryName", "nexus"),
+		mavenRepositoryUrl: gradleProps.getProperty("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/staging/deploy/maven2/"),
+		nexusCloseAndRelease: gradleProps.getProperty("relnexusCloseAndReleaseocate", "true"),
+		sign: gradleProps.getProperty("sign", "true") == "true",
+		// tags: a,b,c # Empty by default
+		tags: gradleProps.getProperty("tags", ""),
+		implementationClass: gradleProps.getProperty("implementationClass", ""),
+		stripGradlePluginSuffix: gradleProps.getProperty("stripGradlePluginSuffix", "true") == "true",
+		// ---- end of default config ----
+	]
+	return givenConfig
+}
 
-// ---- start of default config ----
-def givenConfig = [
-	// repoType: JAR # JAR, GRADLE, COMMAND
-	repoType: gradleProps.getProperty("repoType", "JAR"),
-	// relocate: org:org,com:com # Empty by default
-	relocate: gradleProps.getProperty("relocate", ""),
-	website: gradleProps.getProperty("website", "https://github.com/tomasbjerre/" + project.name),
-	vcsUrl: gradleProps.getProperty("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
-	licenseName: gradleProps.getProperty("licenseName", "The Apache Software License, Version 2.0"),
-	licenseUrl: gradleProps.getProperty("licenseUrl", "http://www.apache.org/licenses/LICENSE-2.0.txt"),
-	developerId: gradleProps.getProperty("developerId", "tomasbjerre"),
-	developerName: gradleProps.getProperty("developerName", "Tomas Bjerre"),
-	developerEmail: gradleProps.getProperty("developerEmail", "tomas.bjerre85@gmail.com"),
-	mavenRepositoryName: gradleProps.getProperty("mavenRepositoryName", "nexus"),
-	mavenRepositoryUrl: gradleProps.getProperty("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/staging/deploy/maven2/"),
-	nexusCloseAndRelease: gradleProps.getProperty("relnexusCloseAndReleaseocate", "true"),
-	sign: gradleProps.getProperty("sign", "true") == "true",
-	// tags: a,b,c # Empty by default
-	tags: gradleProps.getProperty("tags", ""),
-	implementationClass: gradleProps.getProperty("implementationClass", ""),
-	stripGradlePluginSuffix: gradleProps.getProperty("stripGradlePluginSuffix", "true") == "true",
-]
-// ---- end of default config ----
+def getEffectiveConfigConventionalelease() {
+	return getGivenConfigConventionalelease() + [
+		useShadowJar: !givenConfig.relocate.isEmpty(),
+		tags: givenConfig.tags.tokenize(','),
+		relocate: givenConfig.relocate.tokenize(',')]
+}
 
-def effectiveConfig = givenConfig + [
-	useShadowJar: !givenConfig.relocate.isEmpty(),
-	tags: givenConfig.tags.tokenize(','),
-	relocate: givenConfig.relocate.tokenize(',')
-]
-
-logger.lifecycle("Given config: ${givenConfig}")
-logger.info("Effective config: ${effectiveConfig}")
+logger.info("Conventional Release: Given config: ${getGivenConfigConventionalelease()}")
+logger.info("Conventional Release: Effective config: ${getEffectiveConfigConventionalelease()}")
 
 if (effectiveConfig.useShadowJar) {
 	project.plugins.apply "com.gradleup.shadow"
