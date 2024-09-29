@@ -55,24 +55,26 @@ It can be tweaked in `gradle.properties` with some properties, the plugin reads 
 ```groovy
 
 // repoType: JAR # JAR, GRADLE, COMMAND
-repoType: gradleProps.getProperty("repoType", "JAR"),
-// relocate: org:org,com:com # Empty by default
-relocate: gradleProps.getProperty("relocate", ""),
-website: gradleProps.getProperty("website", "https://github.com/tomasbjerre/" + project.name),
-vcsUrl: gradleProps.getProperty("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
-licenseName: gradleProps.getProperty("licenseName", "The Apache Software License, Version 2.0"),
-licenseUrl: gradleProps.getProperty("licenseUrl", "http://www.apache.org/licenses/LICENSE-2.0.txt"),
-developerId: gradleProps.getProperty("developerId", "tomasbjerre"),
-developerName: gradleProps.getProperty("developerName", "Tomas Bjerre"),
-developerEmail: gradleProps.getProperty("developerEmail", "tomas.bjerre85@gmail.com"),
-mavenRepositoryName: gradleProps.getProperty("mavenRepositoryName", "nexus"),
-mavenRepositoryUrl: gradleProps.getProperty("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/staging/deploy/maven2/"),
-nexusCloseAndRelease: gradleProps.getProperty("relnexusCloseAndReleaseocate", "true"),
-sign: gradleProps.getProperty("sign", "true") == "true",
+repoType: project.getProperties().getOrDefault("repoType", "JAR"),
+// relocate: org:org,com:com # Empty by default will.
+relocate: project.getProperties().getOrDefault("relocate", ""),
+website: project.getProperties().getOrDefault("website", "https://github.com/tomasbjerre/" + project.name),
+vcsUrl: project.getProperties().getOrDefault("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
+licenseName: project.getProperties().getOrDefault("licenseName", "The Apache Software License, Version 2.0"),
+licenseUrl: project.getProperties().getOrDefault("licenseUrl", "http://www.apache.org/licenses/LICENSE-2.0.txt"),
+developerId: project.getProperties().getOrDefault("developerId", "tomasbjerre"),
+developerName: project.getProperties().getOrDefault("developerName", "Tomas Bjerre"),
+developerEmail: project.getProperties().getOrDefault("developerEmail", "tomas.bjerre85@gmail.com"),
+mavenRepositoryName: project.getProperties().getOrDefault("mavenRepositoryName", "nexus"),
+mavenRepositoryUrl: project.getProperties().getOrDefault("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/staging/deploy/maven2/"),
+nexusUsernameEnvOrProp: project.getProperties().getOrDefault("nexusUsernameEnvOrProp", "nexusUsername"),
+nexusPasswordEnvOrProp: project.getProperties().getOrDefault("nexusPasswordEnvOrProp", "nexusPassword"),
+signingKeyEnvOrProp: project.getProperties().getOrDefault("signingKeyEnvOrProp", "signing.keyId"),
+signingPasswordEnvOrProp: project.getProperties().getOrDefault("signingPasswordEnvOrProp", "signing.password"),
 // tags: a,b,c # Empty by default
-tags: gradleProps.getProperty("tags", ""),
-implementationClass: gradleProps.getProperty("implementationClass", ""),
-stripGradlePluginSuffix: gradleProps.getProperty("stripGradlePluginSuffix", "true") == "true",
+tags: project.getProperties().getOrDefault("tags", ""),
+implementationClass: project.getProperties().getOrDefault("implementationClass", ""),
+stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
 
 ```
 <!-- end default config -->

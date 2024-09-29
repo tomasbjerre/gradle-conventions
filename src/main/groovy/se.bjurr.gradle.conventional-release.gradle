@@ -1,28 +1,27 @@
 def getGivenConfigConventionalelease() {
-	def propertyFile = file("$rootDir/gradle.properties")
-	def gradleProps = new Properties()
-	propertyFile.withReader { gradleProps.load(it) }
 	def givenConfig = [
 		// ---- start of default config ----
 		// repoType: JAR # JAR, GRADLE, COMMAND
-		repoType: gradleProps.getProperty("repoType", "JAR"),
-		// relocate: org:org,com:com # Empty by default
-		relocate: gradleProps.getProperty("relocate", ""),
-		website: gradleProps.getProperty("website", "https://github.com/tomasbjerre/" + project.name),
-		vcsUrl: gradleProps.getProperty("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
-		licenseName: gradleProps.getProperty("licenseName", "The Apache Software License, Version 2.0"),
-		licenseUrl: gradleProps.getProperty("licenseUrl", "http://www.apache.org/licenses/LICENSE-2.0.txt"),
-		developerId: gradleProps.getProperty("developerId", "tomasbjerre"),
-		developerName: gradleProps.getProperty("developerName", "Tomas Bjerre"),
-		developerEmail: gradleProps.getProperty("developerEmail", "tomas.bjerre85@gmail.com"),
-		mavenRepositoryName: gradleProps.getProperty("mavenRepositoryName", "nexus"),
-		mavenRepositoryUrl: gradleProps.getProperty("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/staging/deploy/maven2/"),
-		nexusCloseAndRelease: gradleProps.getProperty("relnexusCloseAndReleaseocate", "true"),
-		sign: gradleProps.getProperty("sign", "true") == "true",
+		repoType: project.getProperties().getOrDefault("repoType", "JAR"),
+		// relocate: org:org,com:com # Empty by default will.
+		relocate: project.getProperties().getOrDefault("relocate", ""),
+		website: project.getProperties().getOrDefault("website", "https://github.com/tomasbjerre/" + project.name),
+		vcsUrl: project.getProperties().getOrDefault("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
+		licenseName: project.getProperties().getOrDefault("licenseName", "The Apache Software License, Version 2.0"),
+		licenseUrl: project.getProperties().getOrDefault("licenseUrl", "http://www.apache.org/licenses/LICENSE-2.0.txt"),
+		developerId: project.getProperties().getOrDefault("developerId", "tomasbjerre"),
+		developerName: project.getProperties().getOrDefault("developerName", "Tomas Bjerre"),
+		developerEmail: project.getProperties().getOrDefault("developerEmail", "tomas.bjerre85@gmail.com"),
+		mavenRepositoryName: project.getProperties().getOrDefault("mavenRepositoryName", "nexus"),
+		mavenRepositoryUrl: project.getProperties().getOrDefault("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/staging/deploy/maven2/"),
+		nexusUsernameEnvOrProp: project.getProperties().getOrDefault("nexusUsernameEnvOrProp", "nexusUsername"),
+		nexusPasswordEnvOrProp: project.getProperties().getOrDefault("nexusPasswordEnvOrProp", "nexusPassword"),
+		signingKeyEnvOrProp: project.getProperties().getOrDefault("signingKeyEnvOrProp", "signing.keyId"),
+		signingPasswordEnvOrProp: project.getProperties().getOrDefault("signingPasswordEnvOrProp", "signing.password"),
 		// tags: a,b,c # Empty by default
-		tags: gradleProps.getProperty("tags", ""),
-		implementationClass: gradleProps.getProperty("implementationClass", ""),
-		stripGradlePluginSuffix: gradleProps.getProperty("stripGradlePluginSuffix", "true") == "true",
+		tags: project.getProperties().getOrDefault("tags", ""),
+		implementationClass: project.getProperties().getOrDefault("implementationClass", ""),
+		stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
 		// ---- end of default config ----
 	]
 	return givenConfig
@@ -54,6 +53,15 @@ java {
 	withJavadocJar()
 }
 
+def getEnvOrPropValue(variable) {
+	def envValue = providers.environmentVariable(variable).orElse("").get()
+	def propValue = project.property(variable)
+	if (envValue.isEmpty()) {
+		return envValue
+	}
+	return propValue;
+}
+
 def runCommand(args, int attempts = 5) {
 	logger.lifecycle("Executing ${args.join(' ')}")
 	def stdout = new ByteArrayOutputStream()
@@ -73,109 +81,6 @@ def runCommand(args, int attempts = 5) {
 		return runCommand(args, attempts - 1)
 	}
 }
-
-def doPost(String url, String authString, String payload, Integer attempts = 20) {
-	logger.lifecycle("> POST ${url} ${payload}")
-	def responseCode = 0
-	def content = ""
-	def responseMessage = ""
-	try {
-		def conn = url.toURL().openConnection()
-		conn.setRequestMethod("POST")
-		conn.setRequestProperty("Authorization", "Basic ${authString}")
-		conn.setRequestProperty("Accept", "application/json")
-		conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
-		conn.setDoOutput( true )
-
-		Writer wr = new OutputStreamWriter(conn.outputStream)
-		wr.write(payload);
-		wr.flush()
-		wr.close()
-		conn.connect()
-		responseCode = conn.responseCode
-		content = conn.content
-		responseMessage = conn.responseMessage
-	} catch (e) {
-		logger.lifecycle(e.getMessage())
-	}
-
-	if(responseCode == 201){
-		logger.lifecycle("OK")
-	} else {
-		logger.error("Content: "+content)
-		def msg = "There was an error with repositories: ${responseCode} ${responseMessage}"
-		if (attempts == 0) {
-			throw new Exception(msg)
-		} else {
-			logger.lifecycle(msg+". ${attempts} left.")
-			sleep(5000)
-			doPost(url, authString, payload, attempts - 1)
-		}
-	}
-}
-
-List<Map> getNexusOpenRepositories(String url, String authString) {
-	def conn = url.toURL().openConnection()
-	conn.setRequestProperty("Authorization", "Basic ${authString}")
-	conn.setRequestProperty("Accept", "application/json")
-
-	if(conn.responseCode != 200){
-		try {
-			logger.lifecycle("Content: "+conn.content)
-		} catch(Exception e) {}
-		throw new Exception("There was an error while retrieving the repositories from Nexus: ${conn.responseCode} ${conn.responseMessage}")
-	}
-	return new groovy.json.JsonSlurper()
-			.parseText( conn.content.text )
-			.data
-			.findAll { it.type=="open" && it.userId==nexusUsername }
-			.collect { it.repositoryId }
-}
-
-/**
- * Inspired by: https://github.com/adaptivecomputing/plugins-gradle
- */
-task nexusCloseAndRelease() {
-	doLast {
-		def authString = "${nexusUsername}:${nexusPassword}".getBytes().encodeBase64().toString()
-		URL urlObj = getEffectiveConfigConventionalelease().mavenRepositoryUrl.toURL()
-		def baseUrl = urlObj.getProtocol()+"://"+urlObj.getAuthority()+"/"
-		def listStagingUrl = baseUrl + "service/local/staging/profile_repositories"
-		def closeStagingUrl = baseUrl + "service/local/staging/bulk/close"
-		def promoteStagingUrl = baseUrl + "service/local/staging/bulk/promote"
-
-		def repositoryIdsToClose = getNexusOpenRepositories(listStagingUrl, authString)
-		if (repositoryIdsToClose.isEmpty()) {
-			logger.lifecycle("No open repositories to close/promote")
-			return
-		}
-
-		logger.lifecycle("Closing ${repositoryIdsToClose}")
-		doPost(
-				closeStagingUrl,
-				authString,
-				"{'data':{'stagedRepositoryIds':[${repositoryIdsToClose.collect { "'"+it+"'" }.join(",")}],'description':''}}"
-				)
-
-		def attempts = 40
-		sleep(10000)
-		while (getNexusOpenRepositories(listStagingUrl, authString).size() > 0 && attempts != 0) {
-			attempts--
-			logger.lifecycle("Waiting for ${repositoryIdsToClose} to be closed... ${attempts} attempts left.")
-			sleep(10000)
-		}
-
-		logger.lifecycle("Promoting (releasing) ${repositoryIdsToClose}")
-		doPost(
-				promoteStagingUrl,
-				authString,
-				"{'data':{'stagedRepositoryIds':[${repositoryIdsToClose.collect { "'"+it+"'" }.join(",")}],'description':''}}"
-				)
-
-		logger.lifecycle("Nexus promotion done.")
-	}
-}
-
 
 task commitNewVersionTask() {
 	doLast {
@@ -264,13 +169,15 @@ task release(type: GradleBuild) {
 	if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
 		tasks += ["publishPlugins"]
 	} else {
-		tasks += ["publish"]
+		tasks += [
+			"publish",
+			"closeAndReleaseStagingRepositories",
+		]
 	}
 
 	tasks += [
 		'gitChangelog',
-		'commitChangelogTask',
-		'nexusCloseAndRelease'
+		'commitChangelogTask'
 	]
 
 	if (getEffectiveConfigConventionalelease().repoType == 'COMMAND') {
@@ -337,14 +244,17 @@ def pomConfig = {
 
 publishing {
 	publications {
-		gradleScriptsPublication(MavenPublication) { publication ->
+		mavenJava(MavenPublication) { publication ->
 			if (getEffectiveConfigConventionalelease().useShadowJar) {
 				logger.lifecycle("shadow jar in maven publication")
 				project.shadow.component(publication)
+				artifact javadocJar
+				artifact sourcesJar
 			} else {
-				logger.lifecycle("not using shadow jar in maven publication")
+				logger.lifecycle("Regular jar in maven publication")
 				from project.components.java
 			}
+
 			logger.lifecycle("group: ${project.group} name: ${project.name}")
 			groupId project.group.replaceAll("[\"']","")
 			artifactId project.name.replaceAll("[\"']","")
@@ -364,64 +274,39 @@ publishing {
 				}
 			}
 		}
-
-		if (getEffectiveConfigConventionalelease().useShadowJar) {
-			logger.lifecycle("shadow jar in maven publication")
-			shadow(MavenPublication) { publication ->
-				project.shadow.component(publication)
-				artifact javadocJar
-				artifact sourcesJar
-
-				logger.lifecycle("group: ${project.group} name: ${project.name}")
-				groupId project.group.replaceAll("[\"']","")
-				artifactId project.name.replaceAll("[\"']","")
-				version version
-				pom.withXml {
-					def root = asNode()
-					root.appendNode('description', project.description.replaceAll("[\"']",""))
-					root.appendNode('name', project.name)
-					root.appendNode('url', getEffectiveConfigConventionalelease().website)
-					root.appendNode('inceptionYear', new Date().getYear() + 1900)
-					root.children().last() + pomConfig
-				}
-
-				versionMapping {
-					allVariants {
-						fromResolutionResult()
-					}
-				}
-			}
-		}
 	}
+}
 
+nexusPublishing {
 	repositories {
-		maven {
-			name = getEffectiveConfigConventionalelease().mavenRepositoryName
-			credentials(PasswordCredentials)
-			url = getEffectiveConfigConventionalelease().mavenRepositoryUrl
+		sonatype {
+			nexusUrl = uri(getEffectiveConfigConventionalelease().mavenRepositoryUrl)
+			username = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusUsernameEnvOrProp)
+			password = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusPasswordEnvOrProp)
 		}
 	}
 }
 
 signing {
-	required { getEffectiveConfigConventionalelease().sign && gradle.taskGraph.hasTask("publish") }
-	sign publishing.publications.gradleScriptsPublication
-	if (getEffectiveConfigConventionalelease().useShadowJar) {
-		sign publishing.publications.shadow
+	required { gradle.taskGraph.hasTask("publish") }
+	def signingKey = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingKeyEnvOrProp)
+	def signingPassword = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingPasswordEnvOrProp)
+	if (signingKey !=null && signingPassword != null) {
+		useInMemoryPgpKeys(signingKey, signingPassword)
 	}
+	sign(publishing.publications)
 }
+
+publish.dependsOn 'signMavenJavaPublication'
 
 tasks.withType(AbstractPublishToMaven) { publishTask ->
 	tasks.withType(Sign) { signTask ->
 		logger.info("${publishTask} must run after ${signTask}")
 		publishTask.mustRunAfter(signTask)
-	}
-}
-
-tasks.withType(Sign) { signTask ->
-	tasks.withType(Jar) { jarTask ->
-		logger.info("${signTask} must run after ${jarTask}")
-		signTask.mustRunAfter(jarTask)
+		tasks.withType(Jar) { jarTask ->
+			logger.info("${signTask} must run after ${jarTask}")
+			signTask.mustRunAfter(jarTask)
+		}
 	}
 }
 
