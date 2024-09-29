@@ -1,6 +1,6 @@
 def getGivenConfigConventionalelease() {
 	def givenConfig = [
-		// ---- start of default config ----
+		// ---- default config ----
 		// repoType: JAR # JAR, GRADLE, COMMAND
 		repoType: project.getProperties().getOrDefault("repoType", "JAR"),
 		// relocate: org:org,com:com # Empty by default will.
@@ -22,7 +22,7 @@ def getGivenConfigConventionalelease() {
 		tags: project.getProperties().getOrDefault("tags", ""),
 		implementationClass: project.getProperties().getOrDefault("implementationClass", ""),
 		stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
-		// ---- end of default config ----
+		// ---- default config ----
 	]
 	return givenConfig
 }

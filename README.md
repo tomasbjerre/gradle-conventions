@@ -1,4 +1,4 @@
-# Conventional Release Gradle Pluigin
+# Conventional Release Gradle Plugin
 
 [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/se.bjurr.gradle.conventional-release)](https://plugins.gradle.org/plugin/se.bjurr.gradle.conventional-release)
 
@@ -45,15 +45,14 @@ tags=tag1,tag2,tag3
 implementationClass=a.b.c.ImplClass
 ```
 
-Will publish the plugin to [Plugin Portal](https://plugins.gradle.org/) and [Central](https://central.sonatype.com/).
+Will publish the plugin to [Plugin Portal](https://plugins.gradle.org/).
 
 ## Properties
 
 It can be tweaked in `gradle.properties` with some properties, the plugin reads them like this:
 
-<!-- start default config -->
 ```groovy
-
+// ---- default config ----
 // repoType: JAR # JAR, GRADLE, COMMAND
 repoType: project.getProperties().getOrDefault("repoType", "JAR"),
 // relocate: org:org,com:com # Empty by default will.
@@ -75,9 +74,8 @@ signingPasswordEnvOrProp: project.getProperties().getOrDefault("signingPasswordE
 tags: project.getProperties().getOrDefault("tags", ""),
 implementationClass: project.getProperties().getOrDefault("implementationClass", ""),
 stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
-
+// ---- default config ----
 ```
-<!-- end default config -->
 
 ## Requirements
 
