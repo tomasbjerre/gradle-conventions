@@ -96,7 +96,7 @@ def doPost(String url, String authString, String payload, Integer attempts = 20)
 		content = conn.content
 		responseMessage = conn.responseMessage
 	} catch (e) {
-		// Ignore
+		logger.lifecycle(e.getMessage())
 	}
 
 	if(responseCode == 201){
@@ -413,14 +413,14 @@ signing {
 
 tasks.withType(AbstractPublishToMaven) { publishTask ->
 	tasks.withType(Sign) { signTask ->
-		logger.lifecycle("${publishTask} must run after ${signTask}")
+		logger.info("${publishTask} must run after ${signTask}")
 		publishTask.mustRunAfter(signTask)
 	}
 }
 
 tasks.withType(Sign) { signTask ->
 	tasks.withType(Jar) { jarTask ->
-		logger.lifecycle("${signTask} must run after ${jarTask}")
+		logger.info("${signTask} must run after ${jarTask}")
 		signTask.mustRunAfter(jarTask)
 	}
 }
