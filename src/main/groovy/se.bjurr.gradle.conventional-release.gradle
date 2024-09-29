@@ -56,7 +56,7 @@ java {
 def getEnvOrPropValue(variable) {
 	def envValue = providers.environmentVariable(variable).orElse("").get()
 	def propValue = project.property(variable)
-	if (envValue.isEmpty()) {
+	if (!envValue.isEmpty()) {
 		return envValue
 	}
 	return propValue;
@@ -288,11 +288,22 @@ nexusPublishing {
 }
 
 signing {
-	required { gradle.taskGraph.hasTask("publish") }
 	def signingKey = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingKeyEnvOrProp)
 	def signingPassword = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingPasswordEnvOrProp)
-	if (signingKey !=null && signingPassword != null) {
+	def hasSigningCredentials = signingKey != null && signingPassword != null
+	// I use "signing.keyId" prop when building locally, remote probably different and it probably has in memory
+	def assumeThereIsAnInMemoryPgpKeys = getEffectiveConfigConventionalelease().signingKeyEnvOrProp != "signing.keyId"
+
+
+	required {
+		hasSigningCredentials && gradle.taskGraph.hasTask("closeAndReleaseStagingRepositories")
+	}
+
+	if (assumeThereIsAnInMemoryPgpKeys && hasSigningCredentials) {
+		logger.lifecycle("Configuring signing key and password")
 		useInMemoryPgpKeys(signingKey, signingPassword)
+	} else {
+		logger.lifecycle("Not configuring signing key and password")
 	}
 	sign(publishing.publications)
 }
