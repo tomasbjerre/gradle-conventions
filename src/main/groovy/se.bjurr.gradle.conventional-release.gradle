@@ -142,7 +142,6 @@ if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
 
 		plugins {
 			matching { it.name.startsWith(project.group) }.configureEach {
-				automatedPublishing = false
 				tags.set(getEffectiveConfigConventionalelease().tags)
 				description = project.description.replaceAll("[\"']","")
 				id = pluginId
@@ -195,10 +194,10 @@ publishing {
 afterEvaluate {
 	tasks.withType(GenerateMavenPom) { task ->
 		doFirst {
+			task.pom.description = project.description.replaceAll("[\"']","")
+			task.pom.name = project.name
 			task.pom.withXml {
 				def root = asNode()
-				root.appendNode('description', project.description.replaceAll("[\"']",""))
-				root.appendNode('name', project.name)
 				root.appendNode('url', getEffectiveConfigConventionalelease().website)
 				root.appendNode('inceptionYear', new Date().getYear() + 1900)
 				root.children().last() + {
@@ -235,22 +234,6 @@ nexusPublishing {
 			nexusUrl = uri(getEffectiveConfigConventionalelease().mavenRepositoryUrl)
 			username = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusUsernameEnvOrProp)
 			password = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusPasswordEnvOrProp)
-		}
-	}
-}
-
-if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
-		&& !getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
-	// Cannot figure out why 3 different publications are created:
-	// - MavenJava
-	// - PluginMAven
-	// - Publication for the Plugin, something like: Se.bjurr.gradle.conventional-releasePluginMarker
-	tasks.withType(AbstractPublishToMaven).configureEach {
-		if (it.name.startsWith("publishMavenJava")
-				|| it.name.startsWith("publishPluginMaven")) {
-			onlyIf  {
-				return false
-			}
 		}
 	}
 }
