@@ -2,6 +2,26 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.1.8 (2024-09-30)
+
+### Bug Fixes
+
+-  duplicate description and name ([874c9](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/874c90a0d4038f2) Tomas Bjerre)  
+
+## 0.1.7 (2024-09-30)
+
+### Bug Fixes
+
+-  trying to publish only one publication of gradle plugin ([9844a](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/9844afc15e3dd95) Tomas Bjerre)  
+
+## 0.1.6 (2024-09-30)
+
+### Bug Fixes
+
+-  trying to publish only one publication of gradle plugin ([be331](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/be3318fdd8a9bb8) Tomas Bjerre)  
+-  trigger version ([ad824](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/ad8249ed1039e2d) Tomas Bjerre)  
+-  trigger version ([97b4e](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/97b4e4e2ba738fa) Tomas Bjerre)  
+
 ## 0.1.5 (2024-09-30)
 
 ### Bug Fixes
