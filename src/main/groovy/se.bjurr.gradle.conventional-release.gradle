@@ -22,6 +22,7 @@ def getGivenConfigConventionalelease() {
 		tags: project.getProperties().getOrDefault("tags", ""),
 		implementationClass: project.getProperties().getOrDefault("implementationClass", ""),
 		stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
+		publishGradlePluginToGradlePortal: project.getProperties().getOrDefault("publishGradlePluginToGradlePortal", "true") == "true",
 		// ---- default config ----
 	]
 	return givenConfig
@@ -51,6 +52,258 @@ project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 java {
 	withSourcesJar()
 	withJavadocJar()
+}
+
+/**
+ * NPM
+ */
+task publishNpm() {
+	doLast {
+		runCommand(['npm', 'publish'])
+	}
+}
+
+task setupNpmJavaRunnerFiles() {
+	doLast {
+		shouldGitIgnore('index.js')
+		copyIfFound("npm-java-runner-index.js", "index.js")
+		shouldGitIgnore('package.json')
+		shouldGitIgnore('package-lock.json')
+		shouldGitIgnore('node_modules')
+		copyIfFound("npm-java-runner-package.json", "package.json")
+		ant.replace(file: new File("package.json"), token: "PKG_NAME", value: project.name)
+		ant.replace(file: new File("package.json"), token: "PKG_VERSION", value: version)
+		ant.replace(file: new File("package.json"), token: "PKG_WEBSITE", value: getEffectiveConfigConventionalelease().website)
+		ant.replace(file: new File("package.json"), token: "PKG_GIT", value: getEffectiveConfigConventionalelease().vcsUrl)
+		ant.replace(file: new File("package.json"), token: "PKG_AUTHOR", value: getEffectiveConfigConventionalelease().developerName)
+		ant.replace(file: new File("package.json"), token: "PKG_DESCRIPTION", value: project.description.replaceAll("[\"']",""))
+	}
+}
+
+gitChangelogSemanticVersion {
+	suffixSnapshotIfNotTagged = false
+}
+
+/**
+ * Relocating
+ */
+if (getEffectiveConfigConventionalelease().useShadowJar) {
+	getEffectiveConfigConventionalelease().relocate.each { it ->
+		if (it.isEmpty()) {
+			return
+		}
+		def relocateFrom = ""
+		def relocateTo = ""
+		if (it.contains(":")) {
+			relocateFrom = it.split(":")[0]
+			relocateTo = it.split(":")[1]
+		} else {
+			relocateFrom = it
+			relocateTo = (project.group + '.' + project.name + '.' + relocateFrom)
+					.replaceAll('[^a-zA-Z\\.]','')
+		}
+		logger.lifecycle("Relocating ${relocateFrom} to ${relocateTo}")
+		shadowJar {
+			relocate relocateFrom, relocateTo
+		}
+	}
+	shadowJar {
+		archiveBaseName.set(project.name)
+		archiveClassifier.set('')
+		archiveVersion.set(project.version)
+	}
+	build.dependsOn shadowJar
+} else {
+	logger.lifecycle("Not including shadow jar.")
+}
+
+/**
+ * GRADLE
+ */
+if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
+	dependencies {
+		implementation gradleApi()
+	}
+
+	def pluginId = (project.group + '.' + project.name)
+			.replaceAll("[\"']","")
+	if (getEffectiveConfigConventionalelease().stripGradlePluginSuffix) {
+		pluginId = pluginId.replaceAll(/-gradle-plugin$/,"")
+	}
+	def displayNameValue = (name.substring(0, 1).toUpperCase() + name.substring(1))
+			.replaceAll('-',' ')
+			.replaceAll("[\"']","")
+	logger.lifecycle("pluginId ${pluginId} displayName ${displayNameValue}")
+	gradlePlugin {
+		website = getEffectiveConfigConventionalelease().website
+		vcsUrl = getEffectiveConfigConventionalelease().vcsUrl
+		description = project.description.replaceAll("[\"']","")
+
+		plugins {
+			matching { it.name.startsWith(project.group) }.configureEach {
+				tags.set(getEffectiveConfigConventionalelease().tags)
+				description = project.description.replaceAll("[\"']","")
+				id = pluginId
+				displayName = displayNameValue
+				implementationClass = getEffectiveConfigConventionalelease().implementationClass
+			}
+		}
+	}
+}
+
+/**
+ * Maven publishing
+ */
+publishing {
+	publications {
+		if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
+		} else {
+			mavenJava(MavenPublication) { publication ->
+				if (getEffectiveConfigConventionalelease().useShadowJar) {
+					logger.lifecycle("shadow jar in maven publication")
+					project.shadow.component(publication)
+					artifact javadocJar
+					artifact sourcesJar
+				} else {
+					logger.lifecycle("Regular jar in maven publication")
+					from project.components.java
+				}
+
+				logger.lifecycle("group: ${project.group} name: ${project.name}")
+				groupId project.group.replaceAll("[\"']","")
+				artifactId project.name.replaceAll("[\"']","")
+				version version
+
+				versionMapping {
+					allVariants {
+						fromResolutionResult()
+					}
+				}
+			}
+		}
+	}
+}
+
+afterEvaluate {
+	tasks.withType(GenerateMavenPom) { task ->
+		doFirst {
+			task.pom.withXml {
+				def root = asNode()
+				root.appendNode('description', project.description.replaceAll("[\"']",""))
+				root.appendNode('name', project.name)
+				root.appendNode('url', getEffectiveConfigConventionalelease().website)
+				root.appendNode('inceptionYear', new Date().getYear() + 1900)
+				root.children().last() + {
+					scm {
+						url getEffectiveConfigConventionalelease().website
+						connection getEffectiveConfigConventionalelease().vcsUrl
+						developerConnection getEffectiveConfigConventionalelease().vcsUrl
+					}
+
+					licenses {
+						license {
+							name getEffectiveConfigConventionalelease().licenseName
+							url getEffectiveConfigConventionalelease().licenseUrl
+							distribution 'repo'
+						}
+					}
+
+					developers {
+						developer {
+							id getEffectiveConfigConventionalelease().developerId
+							name getEffectiveConfigConventionalelease().developerName
+							email getEffectiveConfigConventionalelease().developerEmail
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+nexusPublishing {
+	repositories {
+		sonatype {
+			nexusUrl = uri(getEffectiveConfigConventionalelease().mavenRepositoryUrl)
+			username = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusUsernameEnvOrProp)
+			password = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusPasswordEnvOrProp)
+		}
+	}
+}
+
+signing {
+	def signingKey = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingKeyEnvOrProp)
+	def signingPassword = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingPasswordEnvOrProp)
+	def hasSigningCredentials = signingKey != null && signingPassword != null
+	// I use "signing.keyId" prop when building locally, remote probably different and it probably has in memory
+	def assumeThereIsAnInMemoryPgpKeys = getEffectiveConfigConventionalelease().signingKeyEnvOrProp != "signing.keyId"
+
+
+	required {
+		hasSigningCredentials && gradle.taskGraph.hasTask("closeAndReleaseStagingRepositories")
+	}
+
+	if (assumeThereIsAnInMemoryPgpKeys && hasSigningCredentials) {
+		logger.lifecycle("Configuring signing key and password")
+		useInMemoryPgpKeys(signingKey, signingPassword)
+	} else {
+		logger.lifecycle("Not configuring signing key and password")
+	}
+	sign(publishing.publications)
+}
+
+publish.dependsOn 'signMavenJavaPublication'
+
+tasks.withType(AbstractPublishToMaven) { publishTask ->
+	tasks.withType(Sign) { signTask ->
+		logger.info("${publishTask} must run after ${signTask}")
+		publishTask.mustRunAfter(signTask)
+		tasks.withType(Jar) { jarTask ->
+			logger.info("${signTask} must run after ${jarTask}")
+			signTask.mustRunAfter(jarTask)
+		}
+	}
+}
+
+/**
+ * Release process
+ */
+task release(type: GradleBuild) {
+	tasks = [
+		'clean',
+		'gitChangelogSemanticVersion',
+		'commitNewVersionTask',
+		'build',
+		'publishToMavenLocal',
+	]
+
+	if (getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
+		tasks += ["publishPlugins"]
+	} else {
+		tasks += [
+			"publish",
+			"closeAndReleaseStagingRepositories",
+		]
+	}
+
+	tasks += [
+		'gitChangelog',
+		'commitChangelogTask'
+	]
+
+	if (getEffectiveConfigConventionalelease().repoType == 'COMMAND') {
+		tasks += [
+			"setupNpmJavaRunnerFiles",
+			"publishNpm"
+		]
+	}
+}
+
+def shouldGitIgnore(filename) {
+	if (!file('.gitignore').text.contains(filename)) {
+		throw new RuntimeException("The .gitignore should include '${filename}'")
+	}
+	logger.lifecycle("${filename} is ignored")
 }
 
 def getEnvOrPropValue(variable) {
@@ -119,239 +372,6 @@ task commitChangelogTask() {
 			runCommand(['git', 'push'])
 		} catch (e) {
 			logger.error("Unable commit/push changelog, skipping that.",e.getMessage())
-		}
-	}
-}
-
-task publishNpm() {
-	doLast {
-		runCommand(['npm', 'publish'])
-	}
-}
-
-def shouldGitIgnore(filename) {
-	if (!file('.gitignore').text.contains(filename)) {
-		throw new RuntimeException("The .gitignore should include '${filename}'")
-	}
-	logger.lifecycle("${filename} is ignored")
-}
-
-task setupNpmJavaRunnerFiles() {
-	doLast {
-		shouldGitIgnore('index.js')
-		copyIfFound("npm-java-runner-index.js", "index.js")
-		shouldGitIgnore('package.json')
-		shouldGitIgnore('package-lock.json')
-		shouldGitIgnore('node_modules')
-		copyIfFound("npm-java-runner-package.json", "package.json")
-		ant.replace(file: new File("package.json"), token: "PKG_NAME", value: project.name)
-		ant.replace(file: new File("package.json"), token: "PKG_VERSION", value: version)
-		ant.replace(file: new File("package.json"), token: "PKG_WEBSITE", value: getEffectiveConfigConventionalelease().website)
-		ant.replace(file: new File("package.json"), token: "PKG_GIT", value: getEffectiveConfigConventionalelease().vcsUrl)
-		ant.replace(file: new File("package.json"), token: "PKG_AUTHOR", value: getEffectiveConfigConventionalelease().developerName)
-		ant.replace(file: new File("package.json"), token: "PKG_DESCRIPTION", value: project.description.replaceAll("[\"']",""))
-	}
-}
-
-gitChangelogSemanticVersion {
-	suffixSnapshotIfNotTagged = false
-}
-
-task release(type: GradleBuild) {
-	tasks = [
-		'clean',
-		'gitChangelogSemanticVersion',
-		'commitNewVersionTask',
-		'build',
-		'publishToMavenLocal',
-	]
-
-	if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
-		tasks += ["publishPlugins"]
-	} else {
-		tasks += [
-			"publish",
-			"closeAndReleaseStagingRepositories",
-		]
-	}
-
-	tasks += [
-		'gitChangelog',
-		'commitChangelogTask'
-	]
-
-	if (getEffectiveConfigConventionalelease().repoType == 'COMMAND') {
-		tasks += [
-			"setupNpmJavaRunnerFiles",
-			"publishNpm"
-		]
-	}
-}
-
-if (getEffectiveConfigConventionalelease().useShadowJar) {
-	getEffectiveConfigConventionalelease().relocate.each { it ->
-		if (it.isEmpty()) {
-			return
-		}
-		def relocateFrom = ""
-		def relocateTo = ""
-		if (it.contains(":")) {
-			relocateFrom = it.split(":")[0]
-			relocateTo = it.split(":")[1]
-		} else {
-			relocateFrom = it
-			relocateTo = (project.group + '.' + project.name + '.' + relocateFrom)
-					.replaceAll('[^a-zA-Z\\.]','')
-		}
-		logger.lifecycle("Relocating ${relocateFrom} to ${relocateTo}")
-		shadowJar {
-			relocate relocateFrom, relocateTo
-		}
-	}
-	shadowJar {
-		archiveBaseName.set(project.name)
-		archiveClassifier.set('')
-		archiveVersion.set(project.version)
-	}
-	build.dependsOn shadowJar
-} else {
-	logger.lifecycle("Not including shadow jar.")
-}
-
-def pomConfig = {
-	scm {
-		url getEffectiveConfigConventionalelease().website
-		connection getEffectiveConfigConventionalelease().vcsUrl
-		developerConnection getEffectiveConfigConventionalelease().vcsUrl
-	}
-
-	licenses {
-		license {
-			name getEffectiveConfigConventionalelease().licenseName
-			url getEffectiveConfigConventionalelease().licenseUrl
-			distribution 'repo'
-		}
-	}
-
-	developers {
-		developer {
-			id getEffectiveConfigConventionalelease().developerId
-			name getEffectiveConfigConventionalelease().developerName
-			email getEffectiveConfigConventionalelease().developerEmail
-		}
-	}
-}
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) { publication ->
-			if (getEffectiveConfigConventionalelease().useShadowJar) {
-				logger.lifecycle("shadow jar in maven publication")
-				project.shadow.component(publication)
-				artifact javadocJar
-				artifact sourcesJar
-			} else {
-				logger.lifecycle("Regular jar in maven publication")
-				from project.components.java
-			}
-
-			logger.lifecycle("group: ${project.group} name: ${project.name}")
-			groupId project.group.replaceAll("[\"']","")
-			artifactId project.name.replaceAll("[\"']","")
-			version version
-			pom.withXml {
-				def root = asNode()
-				root.appendNode('description', project.description.replaceAll("[\"']",""))
-				root.appendNode('name', project.name)
-				root.appendNode('url', getEffectiveConfigConventionalelease().website)
-				root.appendNode('inceptionYear', new Date().getYear() + 1900)
-				root.children().last() + pomConfig
-			}
-
-			versionMapping {
-				allVariants {
-					fromResolutionResult()
-				}
-			}
-		}
-	}
-}
-
-nexusPublishing {
-	repositories {
-		sonatype {
-			nexusUrl = uri(getEffectiveConfigConventionalelease().mavenRepositoryUrl)
-			username = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusUsernameEnvOrProp)
-			password = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusPasswordEnvOrProp)
-		}
-	}
-}
-
-signing {
-	def signingKey = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingKeyEnvOrProp)
-	def signingPassword = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingPasswordEnvOrProp)
-	def hasSigningCredentials = signingKey != null && signingPassword != null
-	// I use "signing.keyId" prop when building locally, remote probably different and it probably has in memory
-	def assumeThereIsAnInMemoryPgpKeys = getEffectiveConfigConventionalelease().signingKeyEnvOrProp != "signing.keyId"
-
-
-	required {
-		hasSigningCredentials && gradle.taskGraph.hasTask("closeAndReleaseStagingRepositories")
-	}
-
-	if (assumeThereIsAnInMemoryPgpKeys && hasSigningCredentials) {
-		logger.lifecycle("Configuring signing key and password")
-		useInMemoryPgpKeys(signingKey, signingPassword)
-	} else {
-		logger.lifecycle("Not configuring signing key and password")
-	}
-	sign(publishing.publications)
-}
-
-publish.dependsOn 'signMavenJavaPublication'
-
-tasks.withType(AbstractPublishToMaven) { publishTask ->
-	tasks.withType(Sign) { signTask ->
-		logger.info("${publishTask} must run after ${signTask}")
-		publishTask.mustRunAfter(signTask)
-		tasks.withType(Jar) { jarTask ->
-			logger.info("${signTask} must run after ${jarTask}")
-			signTask.mustRunAfter(jarTask)
-		}
-	}
-}
-
-
-/**
- * GRADLE
- */
-if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
-	dependencies {
-		implementation gradleApi()
-	}
-
-	def pluginId = (project.group + '.' + project.name)
-			.replaceAll("[\"']","")
-	if (getEffectiveConfigConventionalelease().stripGradlePluginSuffix) {
-		pluginId = pluginId.replaceAll(/-gradle-plugin$/,"")
-	}
-	def displayNameValue = (name.substring(0, 1).toUpperCase() + name.substring(1))
-			.replaceAll('-',' ')
-			.replaceAll("[\"']","")
-	logger.lifecycle("pluginId ${pluginId} displayName ${displayNameValue}")
-	gradlePlugin {
-		website = getEffectiveConfigConventionalelease().website
-		vcsUrl = getEffectiveConfigConventionalelease().vcsUrl
-		description = project.description.replaceAll("[\"']","")
-
-		plugins {
-			matching { it.name.startsWith(project.group) }.configureEach {
-				tags.set(getEffectiveConfigConventionalelease().tags)
-				description = project.description.replaceAll("[\"']","")
-				id = pluginId
-				displayName = displayNameValue
-				implementationClass = getEffectiveConfigConventionalelease().implementationClass
-			}
 		}
 	}
 }
