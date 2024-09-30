@@ -2,6 +2,12 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.1.9 (2024-09-30)
+
+### Bug Fixes
+
+-  trying to publish only one publication of gradle plugin ([f20dd](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/f20dd5d707e9117) Tomas Bjerre)  
+
 ## 0.1.8 (2024-09-30)
 
 ### Bug Fixes
