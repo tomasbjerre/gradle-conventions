@@ -186,7 +186,7 @@ publishing {
 		maven {
 			name = getEffectiveConfigConventionalelease().mavenRepositoryName
 			credentials(PasswordCredentials)
-			url = getEffectiveConfigConventionalelease().mavenRepositoryUrl
+			url = getEffectiveConfigConventionalelease().mavenRepositoryUrl+"staging/deploy/maven2/"
 		}
 	}
 }
