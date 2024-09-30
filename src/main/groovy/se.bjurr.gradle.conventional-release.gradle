@@ -136,13 +136,13 @@ if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
 			.replaceAll("[\"']","")
 	logger.lifecycle("pluginId ${pluginId} displayName ${displayNameValue}")
 	gradlePlugin {
-		automatedPublishing = false
 		website = getEffectiveConfigConventionalelease().website
 		vcsUrl = getEffectiveConfigConventionalelease().vcsUrl
 		description = project.description.replaceAll("[\"']","")
 
 		plugins {
 			matching { it.name.startsWith(project.group) }.configureEach {
+				automatedPublishing = false
 				tags.set(getEffectiveConfigConventionalelease().tags)
 				description = project.description.replaceAll("[\"']","")
 				id = pluginId
@@ -157,8 +157,8 @@ if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
  * Maven publishing
  */
 publishing {
-		if (getEffectiveConfigConventionalelease().repoType != "GRADLE") {
-	publications {
+	if (getEffectiveConfigConventionalelease().repoType != "GRADLE") {
+		publications {
 			mavenJava(MavenPublication) { publication ->
 				if (getEffectiveConfigConventionalelease().useShadowJar) {
 					logger.lifecycle("shadow jar in maven publication")
@@ -239,6 +239,22 @@ nexusPublishing {
 	}
 }
 
+if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
+		&& !getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
+	// Cannot figure out why 3 different publications are created:
+	// - MavenJava
+	// - PluginMAven
+	// - Publication for the Plugin, something like: Se.bjurr.gradle.conventional-releasePluginMarker
+	tasks.withType(AbstractPublishToMaven).configureEach {
+		if (it.name.startsWith("publishMavenJava")
+				|| it.name.startsWith("publishPluginMaven")) {
+			onlyIf  {
+				return false
+			}
+		}
+	}
+}
+
 signing {
 	def signingKey = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingKeyEnvOrProp)
 	def signingPassword = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingPasswordEnvOrProp)
@@ -259,8 +275,6 @@ signing {
 	}
 	sign(publishing.publications)
 }
-
-publish.dependsOn 'signMavenJavaPublication'
 
 tasks.withType(AbstractPublishToMaven) { publishTask ->
 	tasks.withType(Sign) { signTask ->
