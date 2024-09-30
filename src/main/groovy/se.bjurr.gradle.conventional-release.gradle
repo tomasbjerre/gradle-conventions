@@ -277,9 +277,9 @@ tasks.withType(AbstractPublishToMaven) { publishTask ->
  */
 task release(type: GradleBuild) {
 	tasks = [
-		'clean',
 		'gitChangelogSemanticVersion',
 		'commitNewVersionTask',
+		'clean',
 		'build',
 		'publishToMavenLocal',
 	]
