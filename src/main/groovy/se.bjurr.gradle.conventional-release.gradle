@@ -13,7 +13,7 @@ def getGivenConfigConventionalelease() {
 		developerName: project.getProperties().getOrDefault("developerName", "Tomas Bjerre"),
 		developerEmail: project.getProperties().getOrDefault("developerEmail", "tomas.bjerre85@gmail.com"),
 		mavenRepositoryName: project.getProperties().getOrDefault("mavenRepositoryName", "nexus"),
-		mavenRepositoryUrl: project.getProperties().getOrDefault("mavenRepositoryUrl", "https://s01.oss.sonatype.org/service/local/"),
+		mavenRepositoryUrl: project.getProperties().getOrDefault("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/staging/deploy/maven2/"),
 		nexusUsernameEnvOrProp: project.getProperties().getOrDefault("nexusUsernameEnvOrProp", "nexusUsername"),
 		nexusPasswordEnvOrProp: project.getProperties().getOrDefault("nexusPasswordEnvOrProp", "nexusPassword"),
 		signingKeyEnvOrProp: project.getProperties().getOrDefault("signingKeyEnvOrProp", "signing.keyId"),
