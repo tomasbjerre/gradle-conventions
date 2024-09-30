@@ -275,15 +275,15 @@ if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
 	// Cannot figure out why 2 different publications are created:
 	// - PluginMAven
 	// - Publication for the Plugin, something like: Se.bjurr.gradle.conventional-releasePluginMarker
-	logger.info("Skipping tasks...")
+	logger.lifecycle("Skipping tasks...")
 	tasks.withType(AbstractPublishToMaven) {
-		if (it.name.startsWith("publishPluginMaven")) {
-			logger.info("Skipping task ${it.name}")
+		if (it.name.contains("PluginMaven")) {
+			logger.lifecycle("Skipping task ${it.name}")
 			onlyIf  {
 				return false
 			}
 		} else {
-			logger.info("Keeping task ${it.name}")
+			logger.lifecycle("Keeping task ${it.name}")
 		}
 	}
 }
