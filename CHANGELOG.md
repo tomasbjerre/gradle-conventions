@@ -2,6 +2,12 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.1.5 (2024-09-30)
+
+### Bug Fixes
+
+-  trigger version ([8ea0b](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/8ea0b4d989ada47) Tomas Bjerre)  
+
 ## 0.1.4 (2024-09-30)
 
 ### Bug Fixes

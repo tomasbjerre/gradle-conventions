@@ -1,6 +1,6 @@
 # Conventional Release Gradle Plugin
 
-[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/se.bjurr.gradle.conventional-release)](https://plugins.gradle.org/plugin/se.bjurr.gradle.conventional-release)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle/conventional-release/badge.svg)](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle/conventional-release)
 
 Bundle of plugins and some Gradle DSL that can:
 
