@@ -2,6 +2,15 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.1.13 (2024-10-01)
+
+### Bug Fixes
+
+-  avoid closeAndReleaseStagingRepositories, it creates duplicate staging repositories ([595ba](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/595bac0fa78a284) Tomas Bjerre)  
+-  applying com.gradle.plugin-publish ([3d386](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/3d38689cc2a9591) Tomas Bjerre)  
+-  applying com.gradle.plugin-publish ([878de](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/878de116d03bb1b) Tomas Bjerre)  
+-  updating readme ([be98a](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/be98a3192845800) Tomas Bjerre)  
+
 ## 0.1.12 (2024-10-01)
 
 ### Bug Fixes
