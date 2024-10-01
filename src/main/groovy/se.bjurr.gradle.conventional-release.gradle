@@ -286,7 +286,7 @@ task release(type: GradleBuild) {
 	} else {
 		tasks += [
 			"publish",
-			"closeAndReleaseStagingRepositories",
+			//"closeAndReleaseStagingRepositories",
 		]
 	}
 
