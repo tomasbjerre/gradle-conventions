@@ -231,15 +231,15 @@ nexusPublishing {
 	repositories {
 		sonatype {
 			nexusUrl = uri(getEffectiveConfigConventionalelease().mavenRepositoryUrl)
-			username = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusUsernameEnvOrProp)
-			password = getEnvOrPropValue(getEffectiveConfigConventionalelease().nexusPasswordEnvOrProp)
+			username = findEnvOrPropValue(getEffectiveConfigConventionalelease().nexusUsernameEnvOrProp)
+			password = findEnvOrPropValue(getEffectiveConfigConventionalelease().nexusPasswordEnvOrProp)
 		}
 	}
 }
 
 signing {
-	def signingKey = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingKeyEnvOrProp)
-	def signingPassword = getEnvOrPropValue(getEffectiveConfigConventionalelease().signingPasswordEnvOrProp)
+	def signingKey = findEnvOrPropValue(getEffectiveConfigConventionalelease().signingKeyEnvOrProp)
+	def signingPassword = findEnvOrPropValue(getEffectiveConfigConventionalelease().signingPasswordEnvOrProp)
 	def hasSigningCredentials = signingKey != null && signingPassword != null
 	// I use "signing.keyId" prop when building locally, remote probably different and it probably has in memory
 	def assumeThereIsAnInMemoryPgpKeys = getEffectiveConfigConventionalelease().signingKeyEnvOrProp != "signing.keyId"
@@ -310,9 +310,9 @@ def shouldGitIgnore(filename) {
 	logger.lifecycle("${filename} is ignored")
 }
 
-def getEnvOrPropValue(variable) {
+def findEnvOrPropValue(variable) {
 	def envValue = providers.environmentVariable(variable).orElse("").get()
-	def propValue = project.property(variable)
+	def propValue = project.findProperty(variable)
 	if (!envValue.isEmpty()) {
 		return envValue
 	}
