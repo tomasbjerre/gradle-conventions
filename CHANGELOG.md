@@ -2,6 +2,16 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.4.0 (2024-10-01)
+
+### Features
+
+-  Java 17 ([9589b](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/9589b69d7df079c) Tomas Bjerre)  
+
+### Bug Fixes
+
+-  skip publications repositories to avoid duplicate artifacts ([0d24b](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/0d24b4149e6e59f) Tomas Bjerre)  
+
 ## 0.3.0 (2024-10-01)
 
 ### Features
