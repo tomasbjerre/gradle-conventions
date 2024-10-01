@@ -11,6 +11,16 @@ Bundle of plugins and some Gradle DSL that can:
 - Publish command line tools to Maven Central and NPM
 - Publish Gradle plugins to Gradle Plugin Portal
 
+## Usage
+
+Apply it with:
+
+```groovy
+plugins {
+ id "se.bjurr.gradle.conventional-release" version "X"
+}
+```
+
 Run it with:
 
 ```groovy
