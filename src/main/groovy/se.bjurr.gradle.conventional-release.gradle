@@ -47,9 +47,7 @@ project.plugins.apply 'java-library'
 project.plugins.apply 'maven-publish'
 project.plugins.apply 'signing'
 project.plugins.apply "io.github.gradle-nexus.publish-plugin"
-if (getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
-	project.plugins.apply "com.gradle.plugin-publish"
-}
+project.plugins.apply "com.gradle.plugin-publish"
 project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 
 
