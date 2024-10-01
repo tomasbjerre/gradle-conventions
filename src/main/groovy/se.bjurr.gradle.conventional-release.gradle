@@ -176,13 +176,6 @@ if (getEffectiveConfigConventionalelease().repoType != "GRADLE") {
 			}
 		}
 	}
-	repositories {
-		maven {
-			name = getEffectiveConfigConventionalelease().mavenRepositoryName
-			credentials(PasswordCredentials)
-			url = getEffectiveConfigConventionalelease().mavenRepositoryUrl+"staging/deploy/maven2/"
-		}
-	}
 }
 
 afterEvaluate {
