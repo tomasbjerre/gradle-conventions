@@ -65,7 +65,7 @@ developerId: project.getProperties().getOrDefault("developerId", "tomasbjerre"),
 developerName: project.getProperties().getOrDefault("developerName", "Tomas Bjerre"),
 developerEmail: project.getProperties().getOrDefault("developerEmail", "tomas.bjerre85@gmail.com"),
 mavenRepositoryName: project.getProperties().getOrDefault("mavenRepositoryName", "nexus"),
-mavenRepositoryUrl: project.getProperties().getOrDefault("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/staging/deploy/maven2/"),
+mavenRepositoryUrl: project.getProperties().getOrDefault("mavenRepositoryUrl", "https://oss.sonatype.org/service/local/"),
 nexusUsernameEnvOrProp: project.getProperties().getOrDefault("nexusUsernameEnvOrProp", "nexusUsername"),
 nexusPasswordEnvOrProp: project.getProperties().getOrDefault("nexusPasswordEnvOrProp", "nexusPassword"),
 signingKeyEnvOrProp: project.getProperties().getOrDefault("signingKeyEnvOrProp", "signing.keyId"),
@@ -74,6 +74,8 @@ signingPasswordEnvOrProp: project.getProperties().getOrDefault("signingPasswordE
 tags: project.getProperties().getOrDefault("tags", ""),
 implementationClass: project.getProperties().getOrDefault("implementationClass", ""),
 stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
+// If it should be published to Plugin Portal or Central
+publishGradlePluginToGradlePortal: project.getProperties().getOrDefault("publishGradlePluginToGradlePortal", "true") == "true",
 // ---- default config ----
 ```
 

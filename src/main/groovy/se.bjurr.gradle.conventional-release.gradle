@@ -47,7 +47,9 @@ project.plugins.apply 'java-library'
 project.plugins.apply 'maven-publish'
 project.plugins.apply 'signing'
 project.plugins.apply "io.github.gradle-nexus.publish-plugin"
-project.plugins.apply "com.gradle.plugin-publish"
+if (getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
+	project.plugins.apply "com.gradle.plugin-publish"
+}
 project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 
 java {
@@ -266,24 +268,6 @@ tasks.withType(AbstractPublishToMaven) { publishTask ->
 		tasks.withType(Jar) { jarTask ->
 			logger.info("${signTask} must run after ${jarTask}")
 			signTask.mustRunAfter(jarTask)
-		}
-	}
-}
-
-if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
-		&& !getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
-	// Cannot figure out why 2 different publications are created:
-	// - PluginMAven
-	// - Publication for the Plugin, something like: Se.bjurr.gradle.conventional-releasePluginMarker
-	logger.lifecycle("Skipping tasks...")
-	tasks.withType(AbstractPublishToMaven) {
-		if (it.name.contains("PluginMaven")) {
-			logger.lifecycle("Skipping task ${it.name}")
-			onlyIf  {
-				return false
-			}
-		} else {
-			logger.lifecycle("Keeping task ${it.name}")
 		}
 	}
 }
