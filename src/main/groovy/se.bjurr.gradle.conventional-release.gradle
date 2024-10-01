@@ -52,10 +52,6 @@ if (getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
 }
 project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 
-java {
-	withSourcesJar()
-	withJavadocJar()
-}
 
 /**
  * NPM
@@ -123,11 +119,7 @@ if (getEffectiveConfigConventionalelease().useShadowJar) {
 /**
  * GRADLE
  */
-if (getEffectiveConfigConventionalelease().repoType == "GRADLE") {
-	dependencies {
-		implementation gradleApi()
-	}
-
+if (getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
 	def pluginId = (project.group + '.' + project.name)
 			.replaceAll("[\"']","")
 	if (getEffectiveConfigConventionalelease().stripGradlePluginSuffix) {
