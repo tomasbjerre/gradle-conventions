@@ -222,6 +222,11 @@ afterEvaluate {
 	}
 }
 
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
 nexusPublishing {
 	repositories {
 		sonatype {
