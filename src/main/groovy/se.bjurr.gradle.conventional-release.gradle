@@ -149,8 +149,8 @@ if (getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
 /**
  * Maven publishing
  */
+if (getEffectiveConfigConventionalelease().repoType != "GRADLE") {
 publishing {
-	if (getEffectiveConfigConventionalelease().repoType != "GRADLE") {
 		publications {
 			mavenJava(MavenPublication) { publication ->
 				if (getEffectiveConfigConventionalelease().useShadowJar) {
@@ -286,7 +286,7 @@ task release(type: GradleBuild) {
 	} else {
 		tasks += [
 			"publish",
-			//"closeAndReleaseStagingRepositories",
+			"closeAndReleaseStagingRepositories",
 		]
 	}
 
