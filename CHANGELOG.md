@@ -2,6 +2,12 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.1.15 (2024-10-01)
+
+### Bug Fixes
+
+-  avoid duplicate staging repositories ([f90ca](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/f90ca46c35939a8) Tomas Bjerre)  
+
 ## 0.1.14 (2024-10-01)
 
 ### Bug Fixes

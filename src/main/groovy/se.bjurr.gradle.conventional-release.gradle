@@ -150,7 +150,7 @@ if (getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
  * Maven publishing
  */
 if (getEffectiveConfigConventionalelease().repoType != "GRADLE") {
-publishing {
+	publishing {
 		publications {
 			mavenJava(MavenPublication) { publication ->
 				if (getEffectiveConfigConventionalelease().useShadowJar) {
