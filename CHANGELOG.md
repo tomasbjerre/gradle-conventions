@@ -2,6 +2,12 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.2.0 (2024-10-01)
+
+### Features
+
+-  Java 11 ([43951](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/4395191a115b223) Tomas Bjerre)  
+
 ## 0.1.16 (2024-10-01)
 
 ### Bug Fixes
