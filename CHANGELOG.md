@@ -2,6 +2,12 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.1.16 (2024-10-01)
+
+### Bug Fixes
+
+-  avoid crash if props not found ([fce5d](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/fce5d146388d010) Tomas Bjerre)  
+
 ## 0.1.15 (2024-10-01)
 
 ### Bug Fixes
