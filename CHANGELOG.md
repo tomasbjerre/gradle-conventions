@@ -2,6 +2,20 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.1.12 (2024-10-01)
+
+### Bug Fixes
+
+-  adding dependencies ([fea62](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/fea62a95d61eb81) Tomas Bjerre)  
+
+## 0.1.11 (2024-10-01)
+
+### Bug Fixes
+
+-  adding dependencies ([e2b95](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/e2b95495b405563) Tomas Bjerre)  
+-  updating readme ([9505a](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/9505a1c58d50a3f) Tomas Bjerre)  
+-  trying to publish only one publication of gradle plugin ([75738](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/757386bcea97a9e) Tomas Bjerre)  
+
 ## 0.1.10 (2024-09-30)
 
 ### Bug Fixes
