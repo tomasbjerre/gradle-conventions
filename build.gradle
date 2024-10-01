@@ -24,6 +24,9 @@ repositories {
 	mavenLocal()
 }
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
 spotless {
 	groovyGradle {
 		target '*.gradle', '**/*.gradle'
