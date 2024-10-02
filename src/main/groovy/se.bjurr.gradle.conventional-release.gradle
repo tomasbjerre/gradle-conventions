@@ -5,6 +5,8 @@ def getGivenConfigConventionalelease() {
 		repoType: project.getProperties().getOrDefault("repoType", "JAR"),
 		// relocate: org:org,com:com # Empty by default will.
 		relocate: project.getProperties().getOrDefault("relocate", ""),
+		updateChangelog: project.getProperties().getOrDefault("updateChangelog", "true") == "true",
+		setVersionConventional: project.getProperties().getOrDefault("updateChangelog", "true") == "true",
 		website: project.getProperties().getOrDefault("website", "https://github.com/tomasbjerre/" + project.name),
 		vcsUrl: project.getProperties().getOrDefault("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
 		licenseName: project.getProperties().getOrDefault("licenseName", "The Apache Software License, Version 2.0"),
@@ -51,7 +53,13 @@ if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
 		&& getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
 	project.plugins.apply "com.gradle.plugin-publish"
 }
-project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
+if (getEffectiveConfigConventionalelease().updateChangelog
+		|| getEffectiveConfigConventionalelease().setVersionConventional) {
+	project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
+	gitChangelogSemanticVersion {
+		suffixSnapshotIfNotTagged = false
+	}
+}
 
 
 /**
@@ -78,10 +86,6 @@ task setupNpmJavaRunnerFiles() {
 		ant.replace(file: new File("package.json"), token: "PKG_AUTHOR", value: getEffectiveConfigConventionalelease().developerName)
 		ant.replace(file: new File("package.json"), token: "PKG_DESCRIPTION", value: project.description.replaceAll("[\"']",""))
 	}
-}
-
-gitChangelogSemanticVersion {
-	suffixSnapshotIfNotTagged = false
 }
 
 /**
@@ -273,9 +277,14 @@ tasks.withType(AbstractPublishToMaven) { publishTask ->
  * Release process
  */
 task release(type: GradleBuild) {
-	tasks = [
-		'gitChangelogSemanticVersion',
-		'commitNewVersionTask',
+	tasks = []
+	if (getEffectiveConfigConventionalelease().setVersionConventional) {
+		tasks += [
+			'gitChangelogSemanticVersion',
+			'commitNewVersionTask',
+		]
+	}
+	tasks += [
 		'clean',
 		'build',
 		'publishToMavenLocal',
@@ -290,11 +299,12 @@ task release(type: GradleBuild) {
 			"closeAndReleaseStagingRepositories",
 		]
 	}
-
-	tasks += [
-		'gitChangelog',
-		'commitChangelogTask'
-	]
+	if (getEffectiveConfigConventionalelease().updateChangelog) {
+		tasks += [
+			'gitChangelog',
+			'commitChangelogTask'
+		]
+	}
 
 	if (getEffectiveConfigConventionalelease().repoType == 'COMMAND') {
 		tasks += [
