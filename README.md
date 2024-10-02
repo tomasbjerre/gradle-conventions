@@ -91,6 +91,10 @@ implementationClass: project.getProperties().getOrDefault("implementationClass",
 stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
 // If it should be published to Plugin Portal or Central
 publishGradlePluginToGradlePortal: project.getProperties().getOrDefault("publishGradlePluginToGradlePortal", "true") == "true",
+// If using groovy-gradle-plugin it will add a plugin that needs to be adjusted
+adjustExistingGradlePluginPlugins: project.getProperties().getOrDefault("adjustExistingGradlePluginPlugins", "false") == "true",
+// If not using groovy-gradle-plugin a plugin needs to be added
+addGradlePluginPlugins: project.getProperties().getOrDefault("addGradlePluginPlugins", "true") == "true",
 // ---- default config ----
 ```
 

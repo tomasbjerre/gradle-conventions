@@ -29,6 +29,10 @@ def getGivenConfigConventionalelease() {
 		stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
 		// If it should be published to Plugin Portal or Central
 		publishGradlePluginToGradlePortal: project.getProperties().getOrDefault("publishGradlePluginToGradlePortal", "true") == "true",
+		// If using groovy-gradle-plugin it will add a plugin that needs to be adjusted
+		adjustExistingGradlePluginPlugins: project.getProperties().getOrDefault("adjustExistingGradlePluginPlugins", "false") == "true",
+		// If not using groovy-gradle-plugin a plugin needs to be added
+		addGradlePluginPlugins: project.getProperties().getOrDefault("addGradlePluginPlugins", "true") == "true",
 		// ---- default config ----
 	]
 	return givenConfig
@@ -148,12 +152,23 @@ if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
 		description = project.description.replaceAll("[\"']","")
 
 		plugins {
-			matching { it.name.startsWith(project.group) }.configureEach {
-				tags.set(getEffectiveConfigConventionalelease().tags)
-				description = project.description.replaceAll("[\"']","")
-				id = pluginId
-				displayName = displayNameValue
-				implementationClass = getEffectiveConfigConventionalelease().implementationClass
+			if (getEffectiveConfigConventionalelease().addGradlePluginPlugins) {
+				thePlugin {
+					tags.set(getEffectiveConfigConventionalelease().tags)
+					description = project.description.replaceAll("[\"']","")
+					id = pluginId
+					displayName = displayNameValue
+					implementationClass = getEffectiveConfigConventionalelease().implementationClass
+				}
+			}
+			if (getEffectiveConfigConventionalelease().adjustExistingGradlePluginPlugins) {
+				matching { it.name.startsWith(project.group) }.configureEach {
+					tags.set(getEffectiveConfigConventionalelease().tags)
+					description = project.description.replaceAll("[\"']","")
+					id = pluginId
+					displayName = displayNameValue
+					implementationClass = getEffectiveConfigConventionalelease().implementationClass
+				}
 			}
 		}
 	}
