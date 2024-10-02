@@ -97,14 +97,14 @@ Gradle wrapper can be downloaded with:
 cat > gradle/wrapper/gradle-wrapper.properties << EOL
 distributionBase=GRADLE_USER_HOME
 distributionPath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.6-bin.zip
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.10.2-bin.zip
 networkTimeout=10000
 zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 EOL
 
 ./gradlew wrapper \
- --gradle-version=8.6 \
+ --gradle-version=8.10.2 \
  --distribution-type=bin
 ```
 
