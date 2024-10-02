@@ -9,7 +9,7 @@ Bundle of plugins and some Gradle DSL that can:
 - Update `CHANGELOG.md`
 - Publish JAR:s to Maven Central
 - Publish command line tools to Maven Central and NPM
-- Publish Gradle plugins to Gradle Plugin Portal
+- Publish Gradle plugins to Gradle Plugin Portal or Central
 
 ## Usage
 
