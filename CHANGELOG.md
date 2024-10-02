@@ -2,6 +2,20 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.4.1 (2024-10-02)
+
+### Bug Fixes
+
+-  ading source and javadoc jars ([2781e](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/2781e7048997f3d) Tomas Bjerre)  
+
+### Other changes
+
+**Update README.md**
+
+
+[b6707](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/b67073d8857c3aa) Tomas Bjerre *2024-10-02 04:39:15*
+
+
 ## 0.4.0 (2024-10-01)
 
 ### Features
