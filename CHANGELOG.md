@@ -4,6 +4,12 @@
 
 -  git-changelog-gradle-plugin:2.2.1 ([f753e](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/f753ec42b2eac2a) Tomas Bjerre)  
 
+## 0.7.2 (2024-10-02)
+
+### Bug Fixes
+
+-  git-changelog-gradle-plugin:2.2.1 ([f753e](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/f753ec42b2eac2a) Tomas Bjerre)  
+
 ## 0.7.1 (2024-10-02)
 
 ### Bug Fixes
