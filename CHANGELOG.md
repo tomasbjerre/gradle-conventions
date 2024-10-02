@@ -157,26 +157,4 @@ Changelog of conventional-release-gradle-plugin.
 
 ## 0.1.0 (2024-09-30)
 
-### Features
-
--  publish Gradle plugin to Central ([0fef6](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/0fef6f3fb62f66e) Tomas Bjerre)  
--  nexusPublishing ([53d54](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/53d54d1d64f4064) Tomas Bjerre)  
--  logging ([c66ae](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/c66ae28afcd4ca0) Tomas Bjerre)  
-
-### Bug Fixes
-
--  signing ([e25f4](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/e25f4e97e7e8723) Tomas Bjerre)  
--  rootProject ([1dcf4](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/1dcf4e157dff652) Tomas Bjerre)  
--  avoid global variables ([1e58a](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/1e58ad58c1b6eb8) Tomas Bjerre)  
--  avoid global variables ([ef05c](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/ef05c08edeca620) Tomas Bjerre)  
--  javadoc and java sources ([ebee3](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/ebee3056fb2f745) Tomas Bjerre)  
--  only add shadow if used ([36124](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/36124e436443af3) Tomas Bjerre)  
-
-### Other changes
-
-**initial**
-
-
-[65d72](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/65d72d8a36ae6c1) Tomas Bjerre *2024-09-28 07:09:26*
-
-
+First release
