@@ -1,3 +1,9 @@
+## 0.7.1 (2024-10-02)
+
+### Bug Fixes
+
+-  only prepending latest tag ([a0136](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/a01360a56680ef9) Tomas Bjerre)  
+
 ## 0.7.0 (2024-10-02)
 
 ### Features
