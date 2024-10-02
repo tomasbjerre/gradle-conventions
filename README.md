@@ -67,10 +67,10 @@ It can be tweaked in `gradle.properties` with some properties, the plugin reads 
 repoType: project.getProperties().getOrDefault("repoType", "JAR"),
 // relocate: org:org,com:com # Empty by default will.
 relocate: project.getProperties().getOrDefault("relocate", ""),
-updateChangelog: project.getProperties().getOrDefault("updateChangelog", "true") == "true",
 ignoreCommitsIfMessageMatches: project.getProperties().getOrDefault("ignoreCommitsIfMessageMatches", "^\[maven-release-plugin\].*|^\[Gradle Release Plugin\].*|^Merge.*|.*\[GRADLE SCRIPT\].*"),
 // If not prepending, it will rewrite the entire changelog
 prependChangelogToFile: project.getProperties().getOrDefault("prependChangelogToFile", "true") == "true",
+updateChangelog: project.getProperties().getOrDefault("updateChangelog", "true") == "true",
 setVersionConventional: project.getProperties().getOrDefault("updateChangelog", "true") == "true",
 website: project.getProperties().getOrDefault("website", "https://github.com/tomasbjerre/" + project.name),
 vcsUrl: project.getProperties().getOrDefault("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
