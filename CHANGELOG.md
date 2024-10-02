@@ -2,6 +2,12 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.5.0 (2024-10-02)
+
+### Features
+
+-  optionally use git changelog plugin ([a8457](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/a8457dedf6fca1a) Tomas Bjerre)  
+
 ## 0.4.2 (2024-10-02)
 
 ### Bug Fixes
