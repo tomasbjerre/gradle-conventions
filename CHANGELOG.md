@@ -2,6 +2,12 @@
 
 Changelog of conventional-release-gradle-plugin.
 
+## 0.4.2 (2024-10-02)
+
+### Bug Fixes
+
+-  avoid gradle when building jar ([096ab](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/096ab7bc362e494) Tomas Bjerre)  
+
 ## 0.4.1 (2024-10-02)
 
 ### Bug Fixes

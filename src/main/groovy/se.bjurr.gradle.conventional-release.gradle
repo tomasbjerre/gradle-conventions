@@ -48,7 +48,7 @@ project.plugins.apply 'maven-publish'
 project.plugins.apply 'signing'
 project.plugins.apply "io.github.gradle-nexus.publish-plugin"
 if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
-&& getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
+		&& getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
 	project.plugins.apply "com.gradle.plugin-publish"
 }
 project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
@@ -121,7 +121,7 @@ if (getEffectiveConfigConventionalelease().useShadowJar) {
  * GRADLE
  */
 if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
-&& getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
+		&& getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
 	def pluginId = (project.group + '.' + project.name)
 			.replaceAll("[\"']","")
 	if (getEffectiveConfigConventionalelease().stripGradlePluginSuffix) {
@@ -282,7 +282,7 @@ task release(type: GradleBuild) {
 	]
 
 	if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
-&& getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
+			&& getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
 		tasks += ["publishPlugins"]
 	} else {
 		tasks += [
