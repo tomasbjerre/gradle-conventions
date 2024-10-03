@@ -49,6 +49,12 @@ def getEffectiveConfigConventionalelease() {
 logger.info("Conventional Release: Given config: ${getGivenConfigConventionalelease()}")
 logger.info("Conventional Release: Effective config: ${getEffectiveConfigConventionalelease()}")
 
+if (getEffectiveConfigConventionalelease().setVersionConventional) {
+	logger.lifecycle("Setting version from conventional commits")
+	project.ext.setVersionConventional = getEffectiveConfigConventionalelease().setVersionConventional
+	project.ext.suffixSnapshot=false
+	project.ext.suffixSnapshotIfNotTagged=false
+}
 if (getEffectiveConfigConventionalelease().useShadowJar) {
 	project.plugins.apply "com.gradleup.shadow"
 }
