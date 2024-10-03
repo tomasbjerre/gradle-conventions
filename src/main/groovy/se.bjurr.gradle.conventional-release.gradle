@@ -308,15 +308,13 @@ task release(type: GradleBuild) {
 	tasks = []
 	if (getEffectiveConfigConventionalelease().setVersionConventional) {
 		tasks += [
+			'clean',
 			'gitChangelogSemanticVersion',
 			'commitNewVersionTask',
 		]
 	}
-	tasks += [
-		'clean',
-		'build',
-		'publishToMavenLocal',
-	]
+
+	tasks += ['publishToMavenLocal',]
 
 	if (getEffectiveConfigConventionalelease().repoType == "GRADLE"
 			&& getEffectiveConfigConventionalelease().publishGradlePluginToGradlePortal) {
