@@ -1,5 +1,7 @@
-## Unreleased ()
 
+
+
+## 0.7.4 (2024-10-02)
 ### Bug Fixes
 
 -  setVersionConventional property triggered version too late ([3890a](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/3890afa180ccf41) Tomas Bjerre)  
