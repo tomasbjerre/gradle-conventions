@@ -1,3 +1,10 @@
+## 0.7.5 (2024-10-03)
+
+### Bug Fixes
+
+-  adding missing methods for copying files ([92eec](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/92eec3411f4048c) Tomas Bjerre)  
+-  fixing uses this output of task ':jar' without declaring an explicit or implicit... ([b91ca](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/b91ca477ac27afb) Tomas Bjerre)  
+
 
 
 
