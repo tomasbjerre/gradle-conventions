@@ -340,6 +340,41 @@ task release(type: GradleBuild) {
 	}
 }
 
+/**
+ * Supporting methods
+ */
+def findResource(String name, classLoader = project.buildscript.classLoader) {
+	URL resource = classLoader.getResource(name)
+	if (resource == null) {
+		logger.lifecycle("Cannot find resource \"${name}\"")
+		return null;
+	}
+	return resource
+}
+
+def copyResourceToFile(URL resource, String copyTo, classLoader = project.buildscript.classLoader) {
+	logger.lifecycle("Copying ${resource} to ${copyTo}")
+	def content = resource.text
+	def parentFile = new File(copyTo).getParentFile()
+	if (parentFile != null) {
+		parentFile.mkdirs()
+	}
+	FileWriter fw = new FileWriter(copyTo)
+	BufferedWriter bw = new BufferedWriter(fw)
+	bw.write(content)
+	bw.close()
+}
+
+def copyIfFound(String name, String target=null, classLoader = project.buildscript.classLoader) {
+	URL resource = findResource(name, classLoader)
+	if (resource != null) {
+		logger.lifecycle("Found resource ${name} as ${resource}")
+		def newFilename = target == null ? "$buildDir/$name" : target
+		copyResourceToFile(resource, newFilename)
+		return new File(newFilename)
+	}
+}
+
 def shouldGitIgnore(filename) {
 	if (!file('.gitignore').text.contains(filename)) {
 		throw new RuntimeException("The .gitignore should include '${filename}'")
