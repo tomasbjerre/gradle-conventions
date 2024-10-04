@@ -39,8 +39,8 @@ I usually do something like this in a Java project:
 ```groovy
 plugins {
  id "se.bjurr.gradle.conventional-release" version "0.+"
- id "se.bjurr.gradle.update-versions" version "0.+"
  id "se.bjurr.gradle.java-convention" version "0.+"
+ id "se.bjurr.gradle.update-versions" version "0.+"
 }
 ```
 
