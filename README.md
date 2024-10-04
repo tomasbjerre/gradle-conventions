@@ -27,6 +27,35 @@ Run it with:
 ./gradlew release
 ```
 
+I also have other similar plugins:
+
+- <https://github.com/tomasbjerre/java-convention-gradle-plugin>
+- <https://github.com/tomasbjerre/update-versions-gradle-plugin>
+
+I usually do something like this in a Java project:
+
+`build.gradle`:
+
+```groovy
+plugins {
+ id "se.bjurr.gradle.conventional-release" version "0.+"
+ id "se.bjurr.gradle.update-versions" version "0.+"
+ id "se.bjurr.gradle.java-convention" version "0.+"
+}
+```
+
+`settings.gradle`:
+
+```groovy
+pluginManagement {
+ repositories {
+  mavenLocal()
+  mavenCentral()
+  gradlePluginPortal()
+ }
+}
+```
+
 ## Publish JAR:s
 
 The default setting, no need to change any properties.
