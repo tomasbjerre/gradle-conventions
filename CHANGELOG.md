@@ -1,3 +1,9 @@
+## 0.7.6 (2024-10-05)
+
+### Bug Fixes
+
+-  push tag if commit fails ([f07b3](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/f07b35178083967) Tomas Bjerre)  
+
 ## 0.7.5 (2024-10-03)
 
 ### Bug Fixes
