@@ -305,10 +305,9 @@ tasks.withType(AbstractPublishToMaven) { publishTask ->
  * Release process
  */
 task release(type: GradleBuild) {
-	tasks = []
+	tasks = ['clean']
 	if (getEffectiveConfigConventionalelease().setVersionConventional) {
 		tasks += [
-			'clean',
 			'gitChangelogSemanticVersion',
 			'commitNewVersionTask',
 		]
@@ -422,6 +421,11 @@ task commitNewVersionTask() {
 				"chore(release): ${version} [GRADLE SCRIPT]"
 			])
 			runCommand(['git', 'push'])
+		} catch (e) {
+			logger.error("Unable commit/push new version, skipping that.",e.getMessage())
+		}
+
+		try {
 			runCommand(['git', 'tag', "${version}"])
 			runCommand([
 				'git',
@@ -429,8 +433,9 @@ task commitNewVersionTask() {
 				'origin',
 				"${version}"
 			])
+			runCommand(['git', 'push', '--tags'])
 		} catch (e) {
-			logger.error("Unable commit/push new version, skipping that.",e.getMessage())
+			logger.error("Unable tag new version, skipping that.",e.getMessage())
 		}
 	}
 }
