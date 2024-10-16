@@ -1,3 +1,9 @@
+## 0.8.0 (2024-10-16)
+
+### Features
+
+-  show dependency updates in changelog ([2c5df](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/2c5dfdc4dd662d7) Tomas Bjerre)  
+
 ## 0.7.6 (2024-10-05)
 
 ### Bug Fixes
