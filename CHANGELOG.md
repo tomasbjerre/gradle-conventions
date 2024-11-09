@@ -1,3 +1,8 @@
+## 0.8.3 (2024-11-09)
+
+### Dependency updates
+
+- git-changelog-gradle-plugin 3.0.2 ([1640f](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/1640f4cfc1e7f0f) Tomas Bjerre)  
 ## 0.8.0 (2024-10-16)
 
 ### Features
