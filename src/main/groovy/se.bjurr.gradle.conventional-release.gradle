@@ -70,11 +70,11 @@ if (getEffectiveConfigConventionalelease().updateChangelog
 		|| getEffectiveConfigConventionalelease().setVersionConventional) {
 	project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 	gitChangelogSemanticVersion {
-		suffixSnapshotIfNotTagged = false
+		suffixSnapshotIfNotTagged.set(false)
 	}
 	gitChangelog {
-		ignoreCommitsIfMessageMatches = getEffectiveConfigConventionalelease().ignoreCommitsIfMessageMatches
-		prependToFile = getEffectiveConfigConventionalelease().prependChangelogToFile
+		ignoreCommitsIfMessageMatches.set(getEffectiveConfigConventionalelease().ignoreCommitsIfMessageMatches)
+		prependToFile.set(getEffectiveConfigConventionalelease().prependChangelogToFile)
 	}
 }
 
