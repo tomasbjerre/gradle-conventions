@@ -1,3 +1,9 @@
+## 0.9.0 (2025-05-10)
+
+### Features
+
+-  ossrh-staging-api ([0e847](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/0e847703189ee93) Tomas Bjerre)  
+
 ## 0.8.3 (2024-11-09)
 
 ### Dependency updates
