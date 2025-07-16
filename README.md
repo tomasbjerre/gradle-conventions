@@ -112,6 +112,7 @@ mavenRepositoryName: project.getProperties().getOrDefault("mavenRepositoryName",
 mavenRepositoryUrl: project.getProperties().getOrDefault("mavenRepositoryUrl", "https://ossrh-staging-api.central.sonatype.com/service/local/"),
 nexusUsernameEnvOrProp: project.getProperties().getOrDefault("nexusUsernameEnvOrProp", "nexusUsername"),
 nexusPasswordEnvOrProp: project.getProperties().getOrDefault("nexusPasswordEnvOrProp", "nexusPassword"),
+nexusStagingProfileEnvOrProp: project.getProperties().getOrDefault("nexusStagingProfileEnvOrProp", "se.bjurr"),
 signingKeyEnvOrProp: project.getProperties().getOrDefault("signingKeyEnvOrProp", "signing.keyId"),
 signingPasswordEnvOrProp: project.getProperties().getOrDefault("signingPasswordEnvOrProp", "signing.password"),
 // tags: a,b,c # Empty by default
