@@ -1,3 +1,9 @@
+## 0.10.0 (2025-07-16)
+
+### Features
+
+-  nexusStagingProfileEnvOrProp ([0b079](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/0b0797ff105601b) Tomas Bjerre)  
+
 ## 0.9.0 (2025-05-10)
 
 ### Features
