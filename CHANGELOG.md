@@ -1,3 +1,9 @@
+## 0.10.1 (2025-08-11)
+
+### Bug Fixes
+
+-  step patch version on deps ([85d3e](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/85d3ec69ba37d91) Tomas Bjerre)  
+
 ## 0.10.0 (2025-07-16)
 
 ### Features
