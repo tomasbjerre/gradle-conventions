@@ -72,6 +72,7 @@ if (getEffectiveConfigConventionalelease().updateChangelog
 	project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 	gitChangelogSemanticVersion {
 		suffixSnapshotIfNotTagged.set(false)
+		patchVersionPattern.set("[Ff]ix|[Cc]hore\\(deps\\)")
 	}
 	gitChangelog {
 		ignoreCommitsIfMessageMatches.set(getEffectiveConfigConventionalelease().ignoreCommitsIfMessageMatches)
