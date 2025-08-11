@@ -1,3 +1,9 @@
+## 0.11.1 (2025-08-11)
+
+### Bug Fixes
+
+-  logga failed command ([1c3da](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/1c3daa817494f7b) Tomas Bjerre)  
+
 ## 0.11.0 (2025-08-11)
 
 ### Features
