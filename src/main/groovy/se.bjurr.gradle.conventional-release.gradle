@@ -403,8 +403,7 @@ def runCommand(args, int attempts = 5) {
 		}
 		return stdout.toString().trim()
 	} catch (e) {
-		logger.info("Command failed: ${e.getMessage()}")
-		def err = stdout.toString().trim() + "\n" + "Command: ${args.join(' ')}" + "\n" + "Trying ${attempts} more times"
+		def err = stdout.toString().trim() + "\n" + "Command: ${args.join(' ')} failed with ${e.getMessage()}" + "\n" + "Trying ${attempts} more times"
 		logger.lifecycle(err)
 		if (attempts == 0) {
 			throw new RuntimeException(err, e)
