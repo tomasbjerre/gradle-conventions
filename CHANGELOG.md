@@ -1,3 +1,9 @@
+## 0.11.0 (2025-08-11)
+
+### Features
+
+-  log info about error when executing command ([5d228](https://github.com/tomasbjerre/conventional-release-gradle-plugin/commit/5d2281abd2a630c) Tomas Bjerre)  
+
 ## 0.10.1 (2025-08-11)
 
 ### Bug Fixes
