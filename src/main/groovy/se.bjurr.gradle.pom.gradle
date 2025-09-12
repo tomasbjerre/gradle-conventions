@@ -1,0 +1,75 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+
+class PomExtension {
+	final Property<String> website
+	final Property<String> vcsUrl
+	final Property<String> licenseName
+	final Property<String> licenseUrl
+	final Property<String> developerId
+	final Property<String> developerName
+	final Property<String> developerEmail
+
+	PomExtension(ObjectFactory objects, Project project) {
+		website = objects.property(String)
+		vcsUrl = objects.property(String)
+		licenseName = objects.property(String)
+		licenseUrl = objects.property(String)
+		developerId = objects.property(String)
+		developerName = objects.property(String)
+		developerEmail = objects.property(String)
+
+		// Set defaults
+		website.convention("https://github.com/tomasbjerre/" + project.name)
+		vcsUrl.convention("https://github.com/tomasbjerre/" + project.name)
+		licenseName.convention("The Apache Software License, Version 2.0")
+		licenseUrl.convention("http://www.apache.org/licenses/LICENSE-2.0.txt")
+		developerId.convention("tomasbjerre")
+		developerName.convention("Tomas Bjerre")
+		developerEmail.convention("tomas.bjerre85@gmail.com")
+	}
+}
+
+project.extensions.create('pomExtension', PomExtension, project.objects)
+
+import org.gradle.api.publish.maven.tasks.GenerateMavenPom
+
+tasks.withType(GenerateMavenPom).configureEach { task ->
+	doFirst {
+		task.pom.description = project.provider {
+			project.description?.replaceAll("[\"']", "")
+		}.get()
+
+		task.pom.name = project.name
+
+		task.pom.withXml {
+			def root = asNode()
+			root.appendNode('url', project.extensions.pomExtension.website.get())
+			root.appendNode('inceptionYear', (1900 + new Date().year).toString())
+
+			root.children().last() + {
+				scm {
+					url project.extensions.pomExtension.website.get()
+					connection project.extensions.pomExtension.vcsUrl.get()
+					developerConnection project.extensions.pomExtension.vcsUrl.get()
+				}
+
+				licenses {
+					license {
+						name project.extensions.pomExtension.licenseName.get()
+						url project.extensions.pomExtension.licenseUrl.get()
+						distribution 'repo'
+					}
+				}
+
+				developers {
+					developer {
+						id project.extensions.pomExtension.developerId.get()
+						name project.extensions.pomExtension.developerName.get()
+						email project.extensions.pomExtension.developerEmail.get()
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,132 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+
+class ShadowExtension {
+	final Property<String> relocate
+	final Property<String> mainClass
+	final Property<String> jarResourcesFolder
+
+	ShadowExtension(ObjectFactory objects) {
+		/**
+		 * relocate: org:org,com:com # Empty by default will.
+		 */
+		relocate = objects.property(String)
+		mainClass = objects.property(String)
+		jarResourcesFolder = objects.property(String)
+
+		// Set defaults
+		relocate.convention("")
+		jarResourcesFolder.convention("src/jar/resources")
+	}
+}
+
+project.extensions.create('shadowExtension', ShadowExtension, project.objects)
+
+project.plugins.apply 'com.gradleup.shadow'
+project.plugins.apply 'java-library'
+project.plugins.apply 'maven-publish'
+
+
+tasks.named("jar", Jar).configure { jarTask ->
+	def mainClassValue = project.extensions.shadowExtension.mainClass.orNull
+	if (mainClassValue) {
+		jarTask.manifest {
+			attributes('Main-Class': mainClassValue)
+		}
+	}
+
+	def folder = project.layout.projectDirectory
+			.dir(project.extensions.shadowExtension.jarResourcesFolder.get())
+			.asFile
+	if (folder.exists()) {
+		jarTask.from(folder)
+	}
+}
+
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
+afterEvaluate {
+	publishing {
+		publications {
+			mavenJava(MavenPublication) { publication ->
+				logger.lifecycle("shadow jar in maven publication")
+				artifacts.clear()
+				artifact(tasks.named("shadowJar")) {
+					classifier = null
+				}
+				artifact(tasks.javadocJar)
+				artifact(tasks.sourcesJar)
+
+				logger.lifecycle("group: ${project.group} name: ${project.name}")
+				groupId project.group.replaceAll("[\"']","")
+				artifactId project.name.replaceAll("[\"']","")
+				version version
+
+				versionMapping {
+					allVariants {
+						fromResolutionResult()
+					}
+				}
+			}
+		}
+	}
+}
+
+plugins.withId("java") {
+	boolean isEnabled = !project.extensions.shadowExtension.relocate.get().isEmpty()
+
+	if (isEnabled) {
+		configurations.named("runtimeElements") {
+			outgoing.artifact(tasks.shadowJar)
+		}
+		configurations.named("apiElements") {
+			outgoing.artifact(tasks.shadowJar)
+		}
+	}
+}
+
+tasks.named('shadowJar') { shadowJarTask ->
+	boolean isEnabled = !project.extensions.shadowExtension.relocate.get().isEmpty()
+	shadowJarTask.enabled = isEnabled
+
+	def mainClassValue = project.extensions.shadowExtension.mainClass.orNull
+	if (mainClassValue) {
+		shadowJarTask.manifest {
+			attributes('Main-Class': mainClassValue)
+		}
+	}
+
+	if (isEnabled) {
+		shadowJarTask.archiveBaseName.set(project.name)
+		shadowJarTask.archiveVersion.set(project.version)
+		shadowJarTask.archiveClassifier.set('')
+	}
+
+	doFirst {
+		project.extensions.shadowExtension.relocate.get().tokenize(',').each { relocation ->
+			if (relocation.isEmpty()) return
+
+				def (relocateFrom, relocateTo) = relocation.contains(":")
+						? relocation.split(":") as List
+						: [
+							relocation,
+							(project.group + "." + project.name + "." + relocation)
+							.replaceAll("[^a-zA-Z.]", "")
+						]
+
+			logger.lifecycle("Relocating ${relocateFrom} to ${relocateTo}")
+			shadowJarTask.relocate(relocateFrom, relocateTo)
+		}
+	}
+}
+
+tasks.named("build") {
+	def isEnabled = !project.extensions.shadowExtension.relocate.get().isEmpty()
+	if (isEnabled) {
+		dependsOn(tasks.named("shadowJar"))
+	}
+}

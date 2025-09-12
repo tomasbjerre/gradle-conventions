@@ -1,0 +1,150 @@
+import com.gradleup.gr8.FilterTransform
+import org.gradle.api.attributes.Usage
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+
+class Gr8Extension {
+	final Property<String> mainClass
+
+	Gr8Extension(ObjectFactory objects, Project project) {
+		mainClass = objects.property(String)
+	}
+}
+
+project.extensions.create('gr8Extension', Gr8Extension, project.objects)
+
+project.plugins.apply 'com.gradleup.gr8'
+project.plugins.apply 'maven-publish'
+
+def compileOnlyDependenciesForGr8 = configurations.create('compileOnlyDependenciesForGr8') {
+	attributes {
+		attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, FilterTransform.artifactType)
+		attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage, Usage.JAVA_API))
+	}
+}
+compileOnlyDependenciesForGr8.extendsFrom(configurations.compileOnly)
+
+def defaultUserRulesPro = "${project.rootDir}/rules.pro"
+def defaultGeneratedRulesPro = "${project.buildDir}/rules.pro"
+
+repositories {
+	google()
+	mavenCentral()
+}
+
+gr8 {
+	def shadowedJar = create('default') {
+		addProgramJarsFrom(configurations.runtimeClasspath)
+		addProgramJarsFrom(tasks.named("jar").flatMap { it.archiveFile })
+		addClassPathJarsFrom(compileOnlyDependenciesForGr8)
+
+		if (file(defaultUserRulesPro).exists()) {
+			logger.lifecycle("Using rules pro file at {}", defaultUserRulesPro)
+			proguardFile defaultUserRulesPro
+		} else {
+			logger.lifecycle("No user rules Proguard file at {}, using a generated file from {}", defaultUserRulesPro, defaultGeneratedRulesPro)
+			proguardFile defaultGeneratedRulesPro
+		}
+
+		r8Version '8.11.18'
+		systemClassesToolchain { spec ->
+			spec.languageVersion.set(JavaLanguageVersion.of(17))
+		}
+	}
+
+	registerFilterTransform([
+		'.*/impldep/META-INF/versions/.*'
+	])
+
+	replaceOutgoingJar(shadowedJar)
+}
+
+tasks.register("proguardWithManifest", Jar) {
+	dependsOn tasks.named("gr8DefaultShadowedJar")
+
+	archiveClassifier.set("")
+
+	doFirst {
+		def mainClassProp = project.extensions.gr8Extension.mainClass
+		if (!mainClassProp.isPresent()) {
+			logger.lifecycle("No main class defined in gr8Extension")
+			return
+		}
+
+		def gr8Task = tasks.named("gr8DefaultShadowedJar").get()
+		def jarFile = gr8Task.outputs.files.files.find { it.name.endsWith(".jar") }
+		if (!jarFile) {
+			throw new GradleException("No JAR file found in outputs of gr8DefaultShadowedJar")
+		}
+
+		logger.lifecycle("Using main class from gr8Extension: {} in {}", mainClassProp.get(), jarFile)
+
+		manifest {
+			attributes("Main-Class": mainClassProp.get())
+		}
+
+		from {
+			zipTree(jarFile)
+		}
+
+		exclude "META-INF/MANIFEST.MF"
+	}
+}
+
+tasks.register("createRulesProFile") {
+	doLast {
+		def f = file(defaultGeneratedRulesPro)
+		logger.info("Creating rules pro file at {}", f)
+		f.parentFile.mkdirs()
+		f.text = """
+-keep class ${project.group}.** { *; }
+
+-repackageclasses ${project.group}.gr8relocated
+
+# Keep all annotations (optional, only if you use reflection)
+-keepattributes *Annotation*
+
+# Shrink and optimize everything else
+-dontwarn **
+
+# Show what was removed
+-printusage ${project.buildDir}/gr8-removed.txt
+"""
+	}
+}
+
+processResources.dependsOn("createRulesProFile")
+tasks.named("assemble") { dependsOn("proguardWithManifest") }
+tasks.named("build") { dependsOn("proguardWithManifest") }
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(tasks.named("proguardWithManifest"))
+			artifact(tasks.named("sourcesJar"))
+			artifact(tasks.named("javadocJar"))
+
+			groupId project.group.replaceAll("[\"']","")
+			artifactId project.name.replaceAll("[\"']","")
+			version version
+
+			versionMapping {
+				allVariants {
+					fromResolutionResult()
+				}
+			}
+		}
+	}
+	repositories {
+		maven {
+			url = uri("${project.buildDir}/repo") // local test repo
+		}
+	}
+}

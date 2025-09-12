@@ -1,0 +1,31 @@
+plugins {
+	id "se.bjurr.gradle.java" apply false
+	id "se.bjurr.gradle.pom" apply false
+	id "se.bjurr.gradle.publish-java" apply false
+	id "se.bjurr.gradle.static-code-analysis" apply false
+	id "se.bjurr.gradle.formatting" apply false
+	id "se.bjurr.gradle.publish-gradle"
+	id "se.bjurr.gradle.update-versions"
+	id "se.bjurr.gradle.release"
+	id "se.bjurr.gradle.violations-readme"
+}
+
+allprojects {
+	apply plugin: "se.bjurr.gradle.java"
+	apply plugin: "se.bjurr.gradle.pom"
+	apply plugin: "se.bjurr.gradle.publish-java"
+	apply plugin: "se.bjurr.gradle.static-code-analysis"
+	apply plugin: "se.bjurr.gradle.formatting"
+}
+
+dependencies {
+	implementation gradleApi()
+}
+
+releaseExtension {
+	releasePostTasks = [
+		"publish",
+		"closeAndReleaseStagingRepositories",
+	]
+}
+

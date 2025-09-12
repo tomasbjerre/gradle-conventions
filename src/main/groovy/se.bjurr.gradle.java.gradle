@@ -1,0 +1,121 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+
+class JavaExtension {
+	final Property<String> sourceCompatibility
+	final Property<String> targetCompatibility
+	final ListProperty<String> generatedSourceFolders
+	final ListProperty<String> extraTestSourceFolders
+
+	JavaExtension(ObjectFactory objects) {
+		sourceCompatibility = objects.property(String)
+		targetCompatibility = objects.property(String)
+		generatedSourceFolders = objects.listProperty(String)
+		extraTestSourceFolders = objects.listProperty(String)
+
+		// Set defaults
+		sourceCompatibility.convention("17")
+		targetCompatibility.convention("17")
+		generatedSourceFolders.convention([
+			"generatedSourceFolders",
+			"src/gen/java,src/generated/java"
+		])
+		extraTestSourceFolders.convention([
+			"extraTestSourceFolders",
+			"src/test/generated"
+		])
+	}
+}
+
+project.extensions.create('javaExtension', JavaExtension, project.objects)
+
+
+project.plugins.apply 'java-library'
+project.plugins.apply 'eclipse'
+project.plugins.apply 'groovy'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+plugins.withType(JavaPlugin) {
+	tasks.withType(JavaCompile).configureEach {
+		sourceCompatibility = project.extensions.javaExtension.sourceCompatibility.getOrElse(JavaVersion.VERSION_17)
+		targetCompatibility = project.extensions.javaExtension.targetCompatibility.getOrElse(JavaVersion.VERSION_17)
+	}
+
+	project.extensions.javaExtension.generatedSourceFolders
+			.map {
+				it.collect { folder ->
+					project.layout.projectDirectory.dir(folder)
+				}
+			}
+			.get()
+			.each { dir ->
+				if (dir.asFile.exists()) {
+					sourceSets.named("main") {
+						java.srcDir(dir)
+					}
+				}
+			}
+
+	project.extensions.javaExtension.extraTestSourceFolders
+			.map {
+				it.collect { folder ->
+					project.layout.projectDirectory.dir(folder)
+				}
+			}
+			.get()
+			.each { dir ->
+				if (dir.asFile.exists()) {
+					sourceSets.named("test") {
+						java.srcDir(dir)
+					}
+				}
+			}
+}
+
+test {
+	if (System.getProperty('DEBUG', 'false') == 'true') {
+		jvmArgs '-Xdebug',
+				'-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009',
+				'-parameters'
+	}
+}
+
+eclipse {
+	classpath {
+		downloadSources = true
+		downloadJavadoc = true
+	}
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << "-Xlint:-deprecation"
+	options.compilerArgs << "-Xlint:-processing"
+	options.compilerArgs << "-Xdoclint:none"
+	options.warnings = false
+	options.compilerArgs << "-parameters"
+	options.encoding = "UTF-8"
+	sourceCompatibility = project.extensions.javaExtension.sourceCompatibility.get()
+	targetCompatibility = project.extensions.javaExtension.targetCompatibility.get()
+}
+
+allprojects {
+	tasks.withType(Javadoc) {
+		options.addStringOption('Xdoclint:none', '-quiet')
+	}
+}
+
+jar {
+	manifest {
+		attributes 'name': project.name
+		attributes 'Automatic-Module-Name': project.group + "." + project.name
+	}
+}

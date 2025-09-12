@@ -1,0 +1,29 @@
+plugins {
+	id "se.bjurr.gradle.bundle-jar" version "latest-SNAPSHOT"
+	id "se.bjurr.gradle.shadow" version "latest-SNAPSHOT" apply false
+}
+
+staticCodeAnalysisExtension {
+	maxViolations.set(1)
+}
+
+project("project1", {
+	staticCodeAnalysisExtension {
+		maxViolations.set(1)
+	}
+	dependencies {
+		implementation 'com.google.code.gson:gson:2.13.1'
+	}
+})
+
+project("project1-shadow", {
+	apply plugin: "se.bjurr.gradle.shadow"
+
+	shadowExtension {
+		relocate.set("com")
+	}
+
+	dependencies {
+		implementation project(":project1")
+	}
+})

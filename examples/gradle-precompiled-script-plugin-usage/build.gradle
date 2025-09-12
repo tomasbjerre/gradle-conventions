@@ -1,0 +1,4 @@
+plugins {
+	id "java-library"
+	id "se.bjurr.gradle.examples.gradle-precompiled-script-plugin" version "latest-SNAPSHOT"
+}

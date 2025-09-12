@@ -1,0 +1,4 @@
+plugins {
+	id "java-gradle-plugin"
+	id "se.bjurr.gradle.bundle-gradle-binaryplugin" version "latest-SNAPSHOT"
+}

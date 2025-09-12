@@ -1,0 +1,269 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+
+class StaticCodeAnalysisExtension {
+	final Property<Integer> maxViolations
+
+	StaticCodeAnalysisExtension(ObjectFactory objects) {
+		maxViolations = objects.property(Integer)
+
+		// Set defaults
+		maxViolations.convention(0)
+	}
+}
+
+project.extensions.create('staticCodeAnalysisExtension', StaticCodeAnalysisExtension, project.objects)
+
+project.plugins.apply "se.bjurr.violations.violations-gradle-plugin"
+project.plugins.apply "com.github.spotbugs"
+project.plugins.apply "pmd"
+
+
+dependencies {
+	spotbugs 'com.github.spotbugs:spotbugs:4.8.3'
+	spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
+	compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+	enabled = false
+}
+
+
+task generateSpotbugsExcludes {
+	doLast {
+		def xmlContent = """<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+	<Match>
+		<Package name="~.*\\.gen.*" />
+	</Match>
+	<Match>
+		<Package name="~.*\\.generated.*" />
+	</Match>
+	<Match>
+		<Class name="~.*precompiled_.*"/>
+	</Match>
+	<Match>
+		<Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+	</Match>
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP"/>
+	</Match>
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP2"/>
+	</Match>
+	<Match>
+		<Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+	</Match>
+	<Match>
+		<Bug pattern="DCN_NULLPOINTER_EXCEPTION"/>
+	</Match>
+	<Match>
+		<Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+	</Match>
+	<Match>
+		<Bug pattern="REC_CATCH_EXCEPTION"/>
+	</Match>
+	<Match>
+		<Bug pattern="CRLF_INJECTION_LOGS"/>
+	</Match>
+	<Match>
+		<Bug pattern="URLCONNECTION_SSRF_FD"/>
+	</Match>
+	<Match>
+		<Bug pattern="PATH_TRAVERSAL_IN"/>
+	</Match>
+	<Match>
+		<Bug pattern="CT_CONSTRUCTOR_THROW"/>
+	</Match>
+	<Match>
+		<Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+	</Match>
+</FindBugsFilter>
+"""
+		def file = file("$buildDir/spotbugs-exclude.xml")
+		file.parentFile.mkdirs()
+		file.text = xmlContent
+	}
+}
+spotbugsMain {
+	enabled = true
+	ignoreFailures = true
+	effort = com.github.spotbugs.snom.Effort.MAX
+	showProgress = true
+	showStackTraces = false
+
+	dependsOn generateSpotbugsExcludes
+	excludeFilter = new File("$buildDir/spotbugs-exclude.xml")
+
+	reportsDir = new File("$buildDir/reports/spotbugs/")
+	reports {
+		xml {
+			enabled true
+		}
+	}
+}
+
+
+task generatePmdRules {
+	doLast {
+		def file = file("$buildDir/pmd.xml")
+		file.parentFile.mkdirs()
+		file.text = """<?xml version="1.0"?>
+
+<ruleset name="Custom Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        Nada
+    </description>
+
+    <exclude-pattern>.*/(generated-source|generated|test)/.*</exclude-pattern>
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="DataflowAnomalyAnalysis"/>
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="AvoidCatchingThrowable"/>
+        <exclude name="AvoidLiteralsInIfCondition"/>
+        <exclude name="NullAssignment"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+        <exclude name="AvoidCatchingNPE"/>
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+        <exclude name="AvoidFieldNameMatchingTypeName"/>
+        <exclude name="DoNotThrowExceptionInFinally"/>
+        <exclude name="AssignmentInOperand"/>
+    </rule>
+
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="AvoidReassigningLoopVariables"/>
+        <exclude name="GuardLogStatement"/>
+        <exclude name="AvoidReassigningParameters"/>
+        <exclude name="LiteralsFirstInComparisons"/>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="ShortVariable"/>
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="UnnecessaryFullyQualifiedName"/>
+        <exclude name="ClassNamingConventions"/>
+        <exclude name="LinguisticNaming"/>
+        <exclude name="LongVariable"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="UnnecessaryModifier"/>
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="TooManyStaticImports"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="UselessParentheses"/>
+        <exclude name="FieldNamingConventions"/>
+        <exclude name="ConfusingTernary"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="UnnecessaryConstructor"/>
+        <exclude name="LocalVariableNamingConventions"/>
+        <exclude name="FormalParameterNamingConventions"/>
+        <exclude name="MethodNamingConventions"/>
+        <exclude name="UselessQualifiedThis"/>
+        <exclude name="ShortClassName"/>
+        <exclude name="BooleanGetMethodName"/>
+        <exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
+        <exclude name="UnnecessaryLocalBeforeReturn"/>
+    </rule>
+
+    <rule ref="category/java/design.xml">
+        <exclude name="AvoidThrowingRawExceptionTypes"/>
+        <exclude name="AvoidThrowingNullPointerException"/>
+        <exclude name="AvoidRethrowingException"/>
+        <exclude name="SignatureDeclareThrowsException"/>
+        <exclude name="AvoidCatchingGenericException"/>
+        <exclude name="LawOfDemeter"/>
+        <exclude name="UseUtilityClass"/>
+        <exclude name="CyclomaticComplexity"/>
+        <exclude name="ExcessiveImports"/>
+        <exclude name="CognitiveComplexity"/>
+        <exclude name="CollapsibleIfStatements"/>
+        <exclude name="NPathComplexity"/>
+        <exclude name="NcssCount"/>
+        <exclude name="ExcessiveMethodLength"/>
+        <exclude name="DataClass"/>
+        <exclude name="TooManyMethods"/>
+        <exclude name="GodClass"/>
+        <exclude name="AvoidDeeplyNestedIfStmts"/>
+        <exclude name="ExcessivePublicCount"/>
+        <exclude name="TooManyFields"/>
+        <exclude name="ExcessiveParameterList"/>
+        <exclude name="UseObjectForClearerAPI"/>
+        <exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
+    </rule>
+
+    <rule ref="category/java/security.xml">
+    </rule>
+
+    <!-- 
+    <rule ref="category/java/documentation.xml">
+    </rule>
+    //-->
+
+    <rule ref="category/java/performance.xml">
+        <exclude name="UseStringBufferForStringAppends"/>
+        <exclude name="InsufficientStringBufferDeclaration"/>
+        <exclude name="ConsecutiveAppendsShouldReuse"/>
+        <exclude name="ConsecutiveLiteralAppends"/>
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+        <exclude name="InefficientEmptyStringCheck"/>
+        <exclude name="UseIndexOfChar"/>
+        <exclude name="AppendCharacterWithChar"/>
+        <exclude name="RedundantFieldInitializer"/>
+        <exclude name="AddEmptyString"/>
+        <exclude name="InefficientStringBuffering"/>
+    </rule>
+
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="UseConcurrentHashMap"/>
+        <exclude name="AvoidSynchronizedAtMethodLevel"/>
+    </rule>
+</ruleset>
+"""
+	}
+}
+
+pmd {
+	sourceSets = [sourceSets.main]
+	toolVersion = '6.55.0'
+	ruleSets = [] // Gradle has some defaults that needs to be cleared
+	ruleSetFiles = files("$buildDir/pmd.xml")
+}
+
+tasks.withType(Pmd).configureEach {
+	dependsOn generatePmdRules
+}
+
+pmdMain {
+	source = "src/main/java"
+	ignoreFailures = true
+	reports {
+		xml.required = true
+		html.required = true
+	}
+}
+
+task violations(type: se.bjurr.violations.gradle.plugin.ViolationsTask) {
+	minSeverity.set(se.bjurr.violations.lib.model.SEVERITY.INFO)
+	detailLevel.set(se.bjurr.violations.git.ViolationsReporterDetailLevel.VERBOSE)
+	maxViolations.set(project.extensions.staticCodeAnalysisExtension.maxViolations)
+	printViolations.set(true)
+
+	violationConfig()
+			.setFolder(projectDir.path)
+			.setParser(se.bjurr.violations.lib.reports.Parser.FINDBUGS)
+			.setPattern(".*/build/reports/spotbugs/.*\\.xml\$")
+			.setReporter("Spotbugs")
+	violationConfig()
+			.setFolder(projectDir.path)
+			.setParser(se.bjurr.violations.lib.reports.Parser.PMD)
+			.setPattern(".*/build/reports/pmd/.*\\.xml\$")
+			.setReporter("PMD")
+}
+
+check.finalizedBy violations
+

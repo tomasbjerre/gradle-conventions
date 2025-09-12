@@ -1,0 +1,232 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.ListProperty
+
+class ReleaseExtension {
+	final Property<String> ignoreCommitsIfMessageMatches
+	/**
+	 * If not prepending, it will rewrite the entire changelog
+	 */
+	final Property<Boolean> prependChangelogToFile
+	final Property<Boolean> updateChangelog
+	final Property<Boolean> setVersionConventional
+	final Property<String> mavenRepositoryUrl
+	final Property<String> nexusUsernameEnvOrProp
+	final Property<String> nexusPasswordEnvOrProp
+	final Property<String> nexusStagingProfileEnvOrProp
+	final Property<String> signingKeyEnvOrProp
+	final Property<String> signingPasswordEnvOrProp
+	final ListProperty<String> releasePostTasks
+
+	ReleaseExtension(ObjectFactory objects) {
+		ignoreCommitsIfMessageMatches = objects.property(String)
+		prependChangelogToFile = objects.property(Boolean)
+		updateChangelog = objects.property(Boolean)
+		setVersionConventional = objects.property(Boolean)
+		mavenRepositoryUrl = objects.property(String)
+		nexusUsernameEnvOrProp = objects.property(String)
+		nexusPasswordEnvOrProp = objects.property(String)
+		nexusStagingProfileEnvOrProp = objects.property(String)
+		signingKeyEnvOrProp = objects.property(String)
+		signingPasswordEnvOrProp = objects.property(String)
+		releasePostTasks = objects.listProperty(String)
+
+		// Set defaults
+		ignoreCommitsIfMessageMatches.convention("^\\[maven-release-plugin\\].*|^\\[Gradle Release Plugin\\].*|^Merge.*|.*\\[GRADLE SCRIPT\\].*")
+		prependChangelogToFile.convention(true)
+		updateChangelog.convention(true)
+		setVersionConventional.convention(true)
+		mavenRepositoryUrl.convention("https://ossrh-staging-api.central.sonatype.com/service/local/")
+		nexusUsernameEnvOrProp.convention("nexusUsername")
+		nexusPasswordEnvOrProp.convention("nexusPassword")
+		nexusStagingProfileEnvOrProp.convention("se.bjurr")
+		signingKeyEnvOrProp.convention("signingkey")
+		signingPasswordEnvOrProp.convention("signing.password")
+	}
+}
+
+project.extensions.create('releaseExtension', ReleaseExtension, project.objects)
+project.plugins.apply "io.github.gradle-nexus.publish-plugin"
+project.plugins.apply 'signing'
+project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
+
+gitChangelogSemanticVersion {
+	suffixSnapshotIfNotTagged.set(false)
+	patchVersionPattern.set("[Ff]ix|[Cc]hore\\(deps\\)")
+}
+
+gitChangelog {
+	ignoreCommitsIfMessageMatches = project.extensions.releaseExtension.ignoreCommitsIfMessageMatches
+	prependToFile = project.extensions.releaseExtension.prependChangelogToFile
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
+plugins.withId("io.github.gradle-nexus.publish-plugin") {
+	nexusPublishing {
+		repositories {
+			sonatype {
+				nexusUrl.set(project.provider { uri(project.extensions.releaseExtension.mavenRepositoryUrl) })
+				username.set(project.providers
+						.environmentVariable(project.extensions.releaseExtension.nexusUsernameEnvOrProp)
+						.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.nexusUsernameEnvOrProp.get()) })
+						)
+				password.set(project.providers
+						.environmentVariable(project.extensions.releaseExtension.nexusPasswordEnvOrProp)
+						.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.nexusPasswordEnvOrProp.get()) })
+						)
+				stagingProfileId.set(project.providers
+						.environmentVariable(project.extensions.releaseExtension.nexusStagingProfileEnvOrProp)
+						.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.nexusStagingProfileEnvOrProp.get()) })
+						)
+			}
+		}
+	}
+}
+
+plugins.withId("signing") {
+	signing {
+		// Providers for signing key and password
+		def signingKeyProvider = project.providers
+				.environmentVariable(project.extensions.releaseExtension.signingKeyEnvOrProp)
+				.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.signingKeyEnvOrProp.get()) })
+		def signingPasswordProvider = project.providers
+				.environmentVariable(project.extensions.releaseExtension.signingPasswordEnvOrProp)
+				.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.signingPasswordEnvOrProp.get()) })
+
+		// Only required if credentials exist and we're releasing
+		required {
+			signingKeyProvider.present && signingPasswordProvider.present &&
+					gradle.taskGraph.hasTask("closeAndReleaseStagingRepositories")
+		}
+
+		// Configure in-memory PGP keys if available
+		if (signingKeyProvider.present && signingPasswordProvider.present) {
+			logger.lifecycle("Configuring signing key and password")
+			useInMemoryPgpKeys(signingKeyProvider.get(), signingPasswordProvider.get())
+		} else {
+			logger.lifecycle("Not configuring signing key and password")
+		}
+
+		sign(publishing.publications)
+	}
+}
+
+
+tasks.withType(AbstractPublishToMaven) { publishTask ->
+	tasks.withType(Sign) { signTask ->
+		logger.info("${publishTask} must run after ${signTask}")
+		publishTask.mustRunAfter(signTask)
+		tasks.withType(Jar) { jarTask ->
+			logger.info("${signTask} must run after ${jarTask}")
+			signTask.mustRunAfter(jarTask)
+		}
+	}
+}
+
+/**
+ * Release process
+ */
+tasks.register('release', GradleBuild) {
+	tasks = ['clean']
+
+	doFirst {
+		if (project.extensions.releaseExtension.setVersionConventional.get()) {
+			tasks += [
+				'gitChangelogSemanticVersion',
+				'commitNewVersionTask',
+			]
+		}
+
+		tasks += ['publishToMavenLocal']
+
+		if (project.extensions.releaseExtension.updateChangelog.get()) {
+			tasks += [
+				'gitChangelog',
+				'commitChangelogTask'
+			]
+		}
+
+		tasks += project.extensions.releaseExtension.releasePostTasks.get()
+	}
+}
+
+/**
+ * Supporting methods
+ */
+def shouldGitIgnore(filename) {
+	if (!file('.gitignore').text.contains(filename)) {
+		throw new RuntimeException("The .gitignore should include '${filename}'")
+	}
+	logger.lifecycle("${filename} is ignored")
+}
+
+def runCommand(args, int attempts = 5) {
+	logger.lifecycle("Executing ${args.join(' ')}")
+	def stdout = new ByteArrayOutputStream()
+	try {
+		exec {
+			commandLine args
+			standardOutput = stdout
+		}
+		return stdout.toString().trim()
+	} catch (e) {
+		def err = stdout.toString().trim() + "\n" + "Command: ${args.join(' ')} failed with ${e.getMessage()}" + "\n" + "Trying ${attempts} more times"
+		logger.lifecycle(err)
+		if (attempts == 0) {
+			throw new RuntimeException(err, e)
+		}
+		sleep(5 * 1000)
+		return runCommand(args, attempts - 1)
+	}
+}
+
+task commitNewVersionTask() {
+	doLast {
+		try {
+			runCommand([
+				'git',
+				'commit',
+				'-a',
+				'-m',
+				"chore(release): ${version} [GRADLE SCRIPT]"
+			])
+			runCommand(['git', 'push'])
+		} catch (e) {
+			logger.error("Unable commit/push new version, skipping that.",e.getMessage())
+		}
+
+		try {
+			runCommand(['git', 'tag', "${version}"])
+			runCommand([
+				'git',
+				'push',
+				'origin',
+				"${version}"
+			])
+			runCommand(['git', 'push', '--tags'])
+		} catch (e) {
+			logger.error("Unable tag new version, skipping that.",e.getMessage())
+		}
+	}
+}
+
+task commitChangelogTask() {
+	doLast {
+		try {
+			runCommand([
+				'git',
+				'commit',
+				'-a',
+				'-m',
+				"chore(release): Updating changelog with ${version} [GRADLE SCRIPT]"
+			])
+			runCommand(['git', 'push'])
+		} catch (e) {
+			logger.error("Unable commit/push changelog, skipping that.",e.getMessage())
+		}
+	}
+}

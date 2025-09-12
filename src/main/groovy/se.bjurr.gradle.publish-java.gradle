@@ -1,0 +1,34 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+
+class PublishJavaExtension {
+	PublishJavaExtension(ObjectFactory objects) {
+	}
+}
+
+project.extensions.create('publishJavaExtension', PublishJavaExtension, project.objects)
+project.plugins.apply 'maven-publish'
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) { publication ->
+			from components.java
+
+			logger.lifecycle("group: ${project.group} name: ${project.name}")
+			groupId project.group.replaceAll("[\"']","")
+			artifactId project.name.replaceAll("[\"']","")
+			version version
+
+			versionMapping {
+				allVariants {
+					fromResolutionResult()
+				}
+			}
+		}
+	}
+}

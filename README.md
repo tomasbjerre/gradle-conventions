@@ -1,132 +1,10 @@
-# Conventional Release Gradle Plugin
+# Gradle Conventions
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle.conventional-release/se.bjurr.gradle.conventional-release.gradle.plugin/badge.svg)](https://search.maven.org/artifact/se.bjurr.gradle.conventional-release/se.bjurr.gradle.conventional-release.gradle.plugin)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle.gradle-conventions/se.bjurr.gradle.gradle-conventions.gradle.plugin/badge.svg)](https://search.maven.org/artifact/se.bjurr.gradle.gradle-conventions/se.bjurr.gradle.gradle-conventions.gradle.plugin)
 
-Bundle of plugins and some Gradle DSL that can:
+Conventional Gradle plugins that I use in my projects. The ones named with `bundle` are intended to each fulfill a general use case and the others are smaller features that make up those use cases.
 
-- Get version from [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
-- Tag commit
-- Update `CHANGELOG.md`
-- Publish JAR:s to Maven Central
-- Publish command line tools to Maven Central and NPM
-- Publish Gradle plugins to Gradle Plugin Portal or Central
-
-## Usage
-
-Apply it with:
-
-```groovy
-plugins {
- id "se.bjurr.gradle.conventional-release" version "X"
-}
-```
-
-Run it with:
-
-```groovy
-./gradlew release
-```
-
-I also have other similar plugins:
-
-- <https://github.com/tomasbjerre/java-convention-gradle-plugin>
-- <https://github.com/tomasbjerre/update-versions-gradle-plugin>
-
-I usually do something like this in a Java project:
-
-`build.gradle`:
-
-```groovy
-plugins {
- id "se.bjurr.gradle.conventional-release" version "0.+"
- id "se.bjurr.gradle.java-convention" version "0.+"
- id "se.bjurr.gradle.update-versions" version "0.+"
-}
-```
-
-`settings.gradle`:
-
-```groovy
-pluginManagement {
- repositories {
-  mavenLocal()
-  mavenCentral()
-  gradlePluginPortal()
- }
-}
-```
-
-## Publish JAR:s
-
-The default setting, no need to change any properties.
-
-Will publish the JAR to [Central](https://central.sonatype.com/).
-
-## Publish command line tools
-
-In `gradle.properties`:
-
-```properties
-repoType=COMMAND
-```
-
-Will publish the JAR to [Central](https://central.sonatype.com/).
-
-Will package the JAR inside an NPM package and publish that to [NPM](https://plugins.gradle.org/).
-
-## Publish Gradle plugins
-
-In `gradle.properties`:
-
-```properties
-repoType=GRADLE
-tags=tag1,tag2,tag3
-implementationClass=a.b.c.ImplClass
-```
-
-Will publish the plugin to [Plugin Portal](https://plugins.gradle.org/).
-
-## Properties
-
-It can be tweaked in `gradle.properties` with some properties, the plugin reads them like this:
-
-```groovy
-// ---- default config ----
-// repoType: JAR # JAR, GRADLE, COMMAND
-repoType: project.getProperties().getOrDefault("repoType", "JAR"),
-// relocate: org:org,com:com # Empty by default will.
-relocate: project.getProperties().getOrDefault("relocate", ""),
-ignoreCommitsIfMessageMatches: project.getProperties().getOrDefault("ignoreCommitsIfMessageMatches", "^\[maven-release-plugin\].*|^\[Gradle Release Plugin\].*|^Merge.*|.*\[GRADLE SCRIPT\].*"),
-// If not prepending, it will rewrite the entire changelog
-prependChangelogToFile: project.getProperties().getOrDefault("prependChangelogToFile", "true") == "true",
-updateChangelog: project.getProperties().getOrDefault("updateChangelog", "true") == "true",
-setVersionConventional: project.getProperties().getOrDefault("updateChangelog", "true") == "true",
-website: project.getProperties().getOrDefault("website", "https://github.com/tomasbjerre/" + project.name),
-vcsUrl: project.getProperties().getOrDefault("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
-licenseName: project.getProperties().getOrDefault("licenseName", "The Apache Software License, Version 2.0"),
-licenseUrl: project.getProperties().getOrDefault("licenseUrl", "http://www.apache.org/licenses/LICENSE-2.0.txt"),
-developerId: project.getProperties().getOrDefault("developerId", "tomasbjerre"),
-developerName: project.getProperties().getOrDefault("developerName", "Tomas Bjerre"),
-developerEmail: project.getProperties().getOrDefault("developerEmail", "tomas.bjerre85@gmail.com"),
-mavenRepositoryName: project.getProperties().getOrDefault("mavenRepositoryName", "nexus"),
-mavenRepositoryUrl: project.getProperties().getOrDefault("mavenRepositoryUrl", "https://ossrh-staging-api.central.sonatype.com/service/local/"),
-nexusUsernameEnvOrProp: project.getProperties().getOrDefault("nexusUsernameEnvOrProp", "nexusUsername"),
-nexusPasswordEnvOrProp: project.getProperties().getOrDefault("nexusPasswordEnvOrProp", "nexusPassword"),
-nexusStagingProfileEnvOrProp: project.getProperties().getOrDefault("nexusStagingProfileEnvOrProp", "se.bjurr"),
-signingKeyEnvOrProp: project.getProperties().getOrDefault("signingKeyEnvOrProp", "signing.keyId"),
-signingPasswordEnvOrProp: project.getProperties().getOrDefault("signingPasswordEnvOrProp", "signing.password"),
-// tags: a,b,c # Empty by default
-tags: project.getProperties().getOrDefault("tags", ""),
-implementationClass: project.getProperties().getOrDefault("implementationClass", ""),
-stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "true") == "true",
-// If it should be published to Plugin Portal or Central
-publishGradlePluginToGradlePortal: project.getProperties().getOrDefault("publishGradlePluginToGradlePortal", "true") == "true",
-// If using groovy-gradle-plugin it will add a plugin that needs to be adjusted
-adjustExistingGradlePluginPlugins: project.getProperties().getOrDefault("adjustExistingGradlePluginPlugins", "false") == "true",
-// If not using groovy-gradle-plugin a plugin needs to be added
-addGradlePluginPlugins: project.getProperties().getOrDefault("addGradlePluginPlugins", "true") == "true",
-// ---- default config ----
-```
+Se documentation [in the code](/src/main/groovy) and also [running examples](/examples).
 
 ## Requirements
 
@@ -136,14 +14,14 @@ Gradle wrapper can be downloaded with:
 cat > gradle/wrapper/gradle-wrapper.properties << EOL
 distributionBase=GRADLE_USER_HOME
 distributionPath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.10.2-bin.zip
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.14.3-bin.zip
 networkTimeout=10000
 zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 EOL
 
 ./gradlew wrapper \
- --gradle-version=8.10.2 \
+ --gradle-version=8.14.3 \
  --distribution-type=bin
 ```
 

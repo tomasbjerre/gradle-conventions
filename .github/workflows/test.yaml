@@ -1,0 +1,32 @@
+name: Run test script
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  run-test-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Make test.sh executable
+        run: chmod +x test.sh
+
+      - name: Run test.sh
+        run: ./test.sh

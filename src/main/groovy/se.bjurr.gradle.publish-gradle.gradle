@@ -1,0 +1,43 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+
+class PublishGradleExtension {
+	PublishGradleExtension(ObjectFactory objects, Project project) {
+	}
+}
+
+project.extensions.create('publishGradleExtension', PublishGradleExtension, project.objects)
+
+project.plugins.apply "com.gradle.plugin-publish"
+
+
+/**
+ * These are currently not lazy:
+ * https://github.com/gradle/gradle/blob/v9.0.0/platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/PluginDeclaration.java
+ * That is why they are not configured with values from the extension configuration. 
+ */
+def givenConfig = [
+	website: project.getProperties().getOrDefault("website", "https://github.com/tomasbjerre/" + project.name),
+	vcsUrl: project.getProperties().getOrDefault("vcsUrl", "https://github.com/tomasbjerre/" + project.name),
+	// tags: a,b,c # Empty by default
+	tags: project.getProperties().getOrDefault("tags", ""),
+	implementationClass: project.getProperties().getOrDefault("implementationClass", ""),
+	stripGradlePluginSuffix: project.getProperties().getOrDefault("stripGradlePluginSuffix", "false") == "true",
+]
+
+gradlePlugin {
+	website = givenConfig.website
+	vcsUrl = givenConfig.vcsUrl
+	description = project.description.replaceAll("[\"']", "")
+
+	plugins {
+		create("thePlugin") {
+			tags = givenConfig.tags.tokenize(',')
+			description = project.description?.replaceAll("[\"']", "")
+			def pid = (project.group + '.' + project.name).replaceAll("[\"']", "")
+			id = givenConfig.stripGradlePluginSuffix ? pid.replaceAll(/-gradle-plugin$/, "") : pid
+			displayName = project.name.capitalize().replaceAll('-', ' ').replaceAll("[\"']", "")
+			implementationClass = givenConfig.implementationClass
+		}
+	}
+}

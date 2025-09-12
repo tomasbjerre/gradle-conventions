@@ -1,0 +1,17 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+
+class UpdateReadmeWithViolationsExtension {
+
+	UpdateReadmeWithViolationsExtension(ObjectFactory objects) {
+	}
+}
+
+project.extensions.create('updateReadmeWithViolationsExtension', UpdateReadmeWithViolationsExtension, project.objects)
+
+try {
+	se.bjurr.violations.lib.util.Utils.updateReadmeWithReporters()
+	logger.info("Updated README with list of reporters")
+} catch (e) {
+	logger.info("Not updating README with list of reporters: "+e.getMessage())
+}

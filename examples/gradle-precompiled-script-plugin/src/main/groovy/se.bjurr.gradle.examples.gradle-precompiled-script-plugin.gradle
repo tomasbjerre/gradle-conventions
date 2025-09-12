@@ -1,0 +1,7 @@
+task helloworld {
+	doLast {
+		logger.lifecycle('\n\n    *** Hello world! ***\n\n')
+	}
+}
+
+tasks.named("build") { finalizedBy("helloworld") }

@@ -1,0 +1,10 @@
+pluginManagement {
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		gradlePluginPortal()
+		google()
+	}
+}
+
+include "project1","project1-shadow","project1-gr8"

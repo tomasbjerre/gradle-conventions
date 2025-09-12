@@ -1,0 +1,15 @@
+plugins {
+	id "se.bjurr.gradle.bundle-jar-gr8" version "latest-SNAPSHOT"
+}
+
+dependencies {
+	implementation 'com.google.code.gson:gson:2.13.1'
+}
+
+gr8Extension {
+	mainClass.set("se.bjurr.gradle.examples.Main")
+}
+
+staticCodeAnalysisExtension {
+	maxViolations.set(1)
+}

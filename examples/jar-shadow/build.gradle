@@ -1,0 +1,15 @@
+plugins {
+	id "se.bjurr.gradle.bundle-jar-shadow" version "latest-SNAPSHOT"
+}
+
+dependencies {
+	implementation 'com.google.code.gson:gson:2.13.1'
+}
+
+staticCodeAnalysisExtension {
+	maxViolations.set(1)
+}
+
+shadowExtension {
+	relocate.set("com")
+}

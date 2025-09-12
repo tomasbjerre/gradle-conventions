@@ -1,0 +1,19 @@
+plugins {
+	id "se.bjurr.gradle.java"
+	id "se.bjurr.gradle.shadow"
+	id "se.bjurr.gradle.pom"
+	id "se.bjurr.gradle.npm-java-runner"
+	id "se.bjurr.gradle.static-code-analysis"
+	id "se.bjurr.gradle.formatting"
+	id "se.bjurr.gradle.update-versions"
+	id "se.bjurr.gradle.release"
+	id "se.bjurr.gradle.violations-readme"
+}
+
+releaseExtension {
+	releasePostTasks = [
+		"publishNpm",
+		"publish",
+		"closeAndReleaseStagingRepositories",
+	]
+}
