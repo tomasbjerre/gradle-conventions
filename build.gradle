@@ -48,3 +48,13 @@ apply from: "src/main/groovy/se.bjurr.gradle.publish-java.gradle"
 apply from: "src/main/groovy/se.bjurr.gradle.release.gradle"
 
 
+tasks.register('postRelease', GradleBuild) {
+	tasks = [
+		"publish",
+		"closeAndReleaseStagingRepositories"
+	]
+}
+
+tasks.named("release") {
+    finalizedBy("postRelease")
+}
