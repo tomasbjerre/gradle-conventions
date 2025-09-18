@@ -1,3 +1,9 @@
+## 1.0.1 (2025-09-18)
+
+### Bug Fixes
+
+-  trying to fix release script ([269b8](https://github.com/tomasbjerre/gradle-conventions/commit/269b878e0dbd308) Tomas Bjerre)  
+
 ## 1.0.0 (2025-09-18)
 
 ### Breaking changes
