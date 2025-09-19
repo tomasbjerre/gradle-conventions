@@ -1,10 +1,12 @@
 # Gradle Conventions
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle.gradle-conventions/se.bjurr.gradle.gradle-conventions.gradle.plugin/badge.svg)](https://search.maven.org/artifact/se.bjurr.gradle.gradle-conventions/se.bjurr.gradle.gradle-conventions.gradle.plugin)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle/gradle-conventions/badge.svg)](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle/gradle-conventions)
 
 Conventional Gradle plugins that I use in my projects. The ones named with `bundle` are intended to each fulfill a general use case and the others are smaller features that make up those use cases.
 
-Se documentation [in the code](/src/main/groovy) and also [running examples](/examples).
+See documentation [in the code](/src/main/groovy) and also [running examples](/examples).
+
+Release with `./gradlew updateVersion && ./gradlew release`.
 
 ## Requirements
 
