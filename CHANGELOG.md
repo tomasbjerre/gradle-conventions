@@ -1,3 +1,8 @@
+## 1.0.4 (2025-09-19)
+
+### Dependency updates
+
+- updates ([6bea0](https://github.com/tomasbjerre/gradle-conventions/commit/6bea004428de7c0) Tomas Bjerre)  
 ## 1.0.3 (2025-09-19)
 
 ### Bug Fixes
