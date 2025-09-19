@@ -1,3 +1,12 @@
+## 1.0.5 (2025-09-19)
+
+### Bug Fixes
+
+-  publishPlugins for binary gradle plugins ([a86fd](https://github.com/tomasbjerre/gradle-conventions/commit/a86fde778b37e0b) Tomas Bjerre)  
+
+### Dependency updates
+
+- doc ([ede2f](https://github.com/tomasbjerre/gradle-conventions/commit/ede2ff0f09cf82d) Tomas Bjerre)  
 ## 1.0.4 (2025-09-19)
 
 ### Dependency updates
