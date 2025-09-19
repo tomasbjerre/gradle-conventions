@@ -1,3 +1,9 @@
+## Unreleased ()
+
+### Bug Fixes
+
+-  sign bundled artifacts ([bc47d](https://github.com/tomasbjerre/gradle-conventions/commit/bc47de52f802c2d) Tomas Bjerre)  
+
 ## 1.0.1 (2025-09-18)
 
 ### Bug Fixes

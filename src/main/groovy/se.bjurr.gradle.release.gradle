@@ -79,9 +79,10 @@ plugins.withId("io.github.gradle-nexus.publish-plugin") {
  * Release process
  */
 tasks.register('updateVersion', GradleBuild) {
-	tasks = ['gitChangelogSemanticVersion',
-				'commitNewVersionTask',
-			]
+	tasks = [
+		'gitChangelogSemanticVersion',
+		'commitNewVersionTask',
+	]
 }
 
 tasks.register('release', GradleBuild) {
