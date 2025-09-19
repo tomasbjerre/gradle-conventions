@@ -18,12 +18,12 @@ dependencies {
 	implementation "com.gradleup:gr8-plugin:0.11.2"
 	implementation "io.github.gradle-nexus:publish-plugin:2.0.0"
 	implementation "com.gradle.publish:plugin-publish-plugin:2.0.0"
-	implementation "se.bjurr.gitchangelog:git-changelog-gradle-plugin:3.0.2"
+	implementation "se.bjurr.gitchangelog:git-changelog-gradle-plugin:3.1.0"
 	implementation "se.bjurr.gradle.update-versions:se.bjurr.gradle.update-versions.gradle.plugin:1.2.0"
 	implementation "se.bjurr.violations:violations-lib:1.158.1"
-	implementation "com.diffplug.spotless:spotless-plugin-gradle:6.25.0"
-	implementation 'se.bjurr.violations:violations-gradle-plugin:3.0.4'
-	implementation 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.26'
+	implementation "com.diffplug.spotless:spotless-plugin-gradle:7.2.1"
+	implementation "se.bjurr.violations:violations-gradle-plugin:4.0.0"
+	implementation "com.github.spotbugs.snom:spotbugs-gradle-plugin:6.4.2"
 }
 
 repositories {
