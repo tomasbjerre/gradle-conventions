@@ -1,3 +1,9 @@
+## 1.0.6 (2025-09-19)
+
+### Bug Fixes
+
+-  unable to set java version ([8879e](https://github.com/tomasbjerre/gradle-conventions/commit/8879e657bd2421c) Tomas Bjerre)  
+
 ## 1.0.5 (2025-09-19)
 
 ### Bug Fixes
