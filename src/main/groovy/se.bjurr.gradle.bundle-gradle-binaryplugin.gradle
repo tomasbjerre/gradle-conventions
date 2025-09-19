@@ -7,6 +7,7 @@ plugins {
 	id "se.bjurr.gradle.publish-gradle"
 	id "se.bjurr.gradle.update-versions"
 	id "se.bjurr.gradle.release"
+	id "se.bjurr.gradle.sign" apply false
 	id "se.bjurr.gradle.violations-readme"
 }
 
@@ -16,6 +17,7 @@ allprojects {
 	apply plugin: "se.bjurr.gradle.publish-java"
 	apply plugin: "se.bjurr.gradle.static-code-analysis"
 	apply plugin: "se.bjurr.gradle.formatting"
+	apply plugin: "se.bjurr.gradle.sign"
 }
 
 dependencies {

@@ -1,0 +1,62 @@
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.ListProperty
+
+class SignExtension {
+	final Property<String> ignoreCommitsIfMessageMatches
+	/**
+	 * If not prepending, it will rewrite the entire changelog
+	 */
+	final Property<String> signingKeyEnvOrProp
+	final Property<String> signingPasswordEnvOrProp
+
+	SignExtension(ObjectFactory objects) {
+		signingKeyEnvOrProp = objects.property(String)
+		signingPasswordEnvOrProp = objects.property(String)
+
+		// Set defaults
+		signingKeyEnvOrProp.convention("signingkey")
+		signingPasswordEnvOrProp.convention("signing.password")
+	}
+}
+
+project.extensions.create('signExtension', SignExtension, project.objects)
+project.plugins.apply 'signing'
+
+signing {
+	// Providers for signing key and password
+	def signingKeyProvider = project.providers
+			.environmentVariable(project.extensions.signExtension.signingKeyEnvOrProp)
+			.orElse(project.provider { project.findProperty(project.extensions.signExtension.signingKeyEnvOrProp.get()) })
+	def signingPasswordProvider = project.providers
+			.environmentVariable(project.extensions.signExtension.signingPasswordEnvOrProp)
+			.orElse(project.provider { project.findProperty(project.extensions.signExtension.signingPasswordEnvOrProp.get()) })
+
+	// Only required if credentials exist and we're releasing
+	required {
+		signingKeyProvider.present && signingPasswordProvider.present &&
+				gradle.taskGraph.hasTask("closeAndReleaseStagingRepositories")
+	}
+
+	// Configure in-memory PGP keys if available
+	if (signingKeyProvider.present && signingPasswordProvider.present) {
+		logger.lifecycle("Configuring signing key and password")
+		useInMemoryPgpKeys(signingKeyProvider.get(), signingPasswordProvider.get())
+	} else {
+		logger.lifecycle("Not configuring signing key and password")
+	}
+
+	sign(publishing.publications)
+}
+
+
+tasks.withType(AbstractPublishToMaven) { publishTask ->
+	tasks.withType(Sign) { signTask ->
+		logger.info("${publishTask} must run after ${signTask}")
+		publishTask.mustRunAfter(signTask)
+		tasks.withType(Jar) { jarTask ->
+			logger.info("${signTask} must run after ${jarTask}")
+			signTask.mustRunAfter(jarTask)
+		}
+	}
+}

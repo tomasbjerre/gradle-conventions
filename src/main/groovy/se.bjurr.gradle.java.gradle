@@ -91,11 +91,6 @@ eclipse {
 	}
 }
 
-java {
-	withSourcesJar()
-	withJavadocJar()
-}
-
 tasks.withType(JavaCompile) {
 	options.compilerArgs << "-Xlint:-deprecation"
 	options.compilerArgs << "-Xlint:-processing"

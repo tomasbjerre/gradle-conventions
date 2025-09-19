@@ -43,33 +43,30 @@ tasks.named("jar", Jar).configure { jarTask ->
 	}
 }
 
-
 java {
 	withSourcesJar()
 	withJavadocJar()
 }
 
-afterEvaluate {
-	publishing {
-		publications {
-			mavenJava(MavenPublication) { publication ->
-				logger.lifecycle("shadow jar in maven publication")
-				artifacts.clear()
-				artifact(tasks.named("shadowJar")) {
-					classifier = null
-				}
-				artifact(tasks.javadocJar)
-				artifact(tasks.sourcesJar)
+publishing {
+	publications {
+		mavenJava(MavenPublication) { publication ->
+			logger.lifecycle("shadow jar in maven publication")
+			artifacts.clear()
+			artifact(tasks.named("shadowJar")) {
+				classifier = null
+			}
+			artifact(tasks.javadocJar)
+			artifact(tasks.sourcesJar)
 
-				logger.lifecycle("group: ${project.group} name: ${project.name}")
-				groupId project.group.replaceAll("[\"']","")
-				artifactId project.name.replaceAll("[\"']","")
-				version version
+			logger.lifecycle("group: ${project.group} name: ${project.name}")
+			groupId project.group.replaceAll("[\"']","")
+			artifactId project.name.replaceAll("[\"']","")
+			version version
 
-				versionMapping {
-					allVariants {
-						fromResolutionResult()
-					}
+			versionMapping {
+				allVariants {
+					fromResolutionResult()
 				}
 			}
 		}
@@ -77,36 +74,27 @@ afterEvaluate {
 }
 
 plugins.withId("java") {
-	boolean isEnabled = !project.extensions.shadowExtension.relocate.get().isEmpty()
-
-	if (isEnabled) {
-		configurations.named("runtimeElements") {
-			outgoing.artifact(tasks.shadowJar)
-		}
-		configurations.named("apiElements") {
-			outgoing.artifact(tasks.shadowJar)
-		}
+	configurations.named("runtimeElements") {
+		outgoing.artifact(tasks.shadowJar)
+	}
+	configurations.named("apiElements") {
+		outgoing.artifact(tasks.shadowJar)
 	}
 }
 
 tasks.named('shadowJar') { shadowJarTask ->
-	boolean isEnabled = !project.extensions.shadowExtension.relocate.get().isEmpty()
-	shadowJarTask.enabled = isEnabled
-
-	def mainClassValue = project.extensions.shadowExtension.mainClass.orNull
-	if (mainClassValue) {
-		shadowJarTask.manifest {
-			attributes('Main-Class': mainClassValue)
-		}
-	}
-
-	if (isEnabled) {
-		shadowJarTask.archiveBaseName.set(project.name)
-		shadowJarTask.archiveVersion.set(project.version)
-		shadowJarTask.archiveClassifier.set('')
-	}
+	shadowJarTask.archiveBaseName.set(project.name)
+	shadowJarTask.archiveVersion.set(project.version)
+	shadowJarTask.archiveClassifier.set('')
 
 	doFirst {
+		def mainClassValue = project.extensions.shadowExtension.mainClass.orNull
+		if (mainClassValue) {
+			shadowJarTask.manifest {
+				attributes('Main-Class': mainClassValue)
+			}
+		}
+
 		project.extensions.shadowExtension.relocate.get().tokenize(',').each { relocation ->
 			if (relocation.isEmpty()) return
 
@@ -125,8 +113,5 @@ tasks.named('shadowJar') { shadowJarTask ->
 }
 
 tasks.named("build") {
-	def isEnabled = !project.extensions.shadowExtension.relocate.get().isEmpty()
-	if (isEnabled) {
-		dependsOn(tasks.named("shadowJar"))
-	}
+	dependsOn(tasks.named("shadowJar"))
 }

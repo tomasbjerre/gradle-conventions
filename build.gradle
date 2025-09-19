@@ -46,7 +46,7 @@ processResources.dependsOn spotlessApply
 apply from: "src/main/groovy/se.bjurr.gradle.pom.gradle"
 apply from: "src/main/groovy/se.bjurr.gradle.publish-java.gradle"
 apply from: "src/main/groovy/se.bjurr.gradle.release.gradle"
-
+apply from: "src/main/groovy/se.bjurr.gradle.sign.gradle"
 
 tasks.named("release") {
 	tasks = [

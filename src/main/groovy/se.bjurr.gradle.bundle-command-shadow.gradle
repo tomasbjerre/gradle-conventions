@@ -7,6 +7,7 @@ plugins {
 	id "se.bjurr.gradle.formatting"
 	id "se.bjurr.gradle.update-versions"
 	id "se.bjurr.gradle.release"
+	id "se.bjurr.gradle.sign"
 	id "se.bjurr.gradle.violations-readme"
 }
 

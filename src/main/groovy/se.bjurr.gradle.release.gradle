@@ -14,8 +14,6 @@ class ReleaseExtension {
 	final Property<String> nexusUsernameEnvOrProp
 	final Property<String> nexusPasswordEnvOrProp
 	final Property<String> nexusStagingProfileEnvOrProp
-	final Property<String> signingKeyEnvOrProp
-	final Property<String> signingPasswordEnvOrProp
 	final ListProperty<String> releasePostTasks
 
 	ReleaseExtension(ObjectFactory objects) {
@@ -27,8 +25,6 @@ class ReleaseExtension {
 		nexusUsernameEnvOrProp = objects.property(String)
 		nexusPasswordEnvOrProp = objects.property(String)
 		nexusStagingProfileEnvOrProp = objects.property(String)
-		signingKeyEnvOrProp = objects.property(String)
-		signingPasswordEnvOrProp = objects.property(String)
 		releasePostTasks = objects.listProperty(String)
 
 		// Set defaults
@@ -40,14 +36,11 @@ class ReleaseExtension {
 		nexusUsernameEnvOrProp.convention("nexusUsername")
 		nexusPasswordEnvOrProp.convention("nexusPassword")
 		nexusStagingProfileEnvOrProp.convention("se.bjurr")
-		signingKeyEnvOrProp.convention("signingkey")
-		signingPasswordEnvOrProp.convention("signing.password")
 	}
 }
 
 project.extensions.create('releaseExtension', ReleaseExtension, project.objects)
 project.plugins.apply "io.github.gradle-nexus.publish-plugin"
-project.plugins.apply 'signing'
 project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 
 gitChangelogSemanticVersion {
@@ -58,11 +51,6 @@ gitChangelogSemanticVersion {
 gitChangelog {
 	ignoreCommitsIfMessageMatches = project.extensions.releaseExtension.ignoreCommitsIfMessageMatches
 	prependToFile = project.extensions.releaseExtension.prependChangelogToFile
-}
-
-java {
-	withSourcesJar()
-	withJavadocJar()
 }
 
 plugins.withId("io.github.gradle-nexus.publish-plugin") {
@@ -83,46 +71,6 @@ plugins.withId("io.github.gradle-nexus.publish-plugin") {
 						.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.nexusStagingProfileEnvOrProp.get()) })
 						)
 			}
-		}
-	}
-}
-
-plugins.withId("signing") {
-	signing {
-		// Providers for signing key and password
-		def signingKeyProvider = project.providers
-				.environmentVariable(project.extensions.releaseExtension.signingKeyEnvOrProp)
-				.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.signingKeyEnvOrProp.get()) })
-		def signingPasswordProvider = project.providers
-				.environmentVariable(project.extensions.releaseExtension.signingPasswordEnvOrProp)
-				.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.signingPasswordEnvOrProp.get()) })
-
-		// Only required if credentials exist and we're releasing
-		required {
-			signingKeyProvider.present && signingPasswordProvider.present &&
-					gradle.taskGraph.hasTask("closeAndReleaseStagingRepositories")
-		}
-
-		// Configure in-memory PGP keys if available
-		if (signingKeyProvider.present && signingPasswordProvider.present) {
-			logger.lifecycle("Configuring signing key and password")
-			useInMemoryPgpKeys(signingKeyProvider.get(), signingPasswordProvider.get())
-		} else {
-			logger.lifecycle("Not configuring signing key and password")
-		}
-
-		sign(publishing.publications)
-	}
-}
-
-
-tasks.withType(AbstractPublishToMaven) { publishTask ->
-	tasks.withType(Sign) { signTask ->
-		logger.info("${publishTask} must run after ${signTask}")
-		publishTask.mustRunAfter(signTask)
-		tasks.withType(Jar) { jarTask ->
-			logger.info("${signTask} must run after ${jarTask}")
-			signTask.mustRunAfter(jarTask)
 		}
 	}
 }
