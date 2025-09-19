@@ -1,3 +1,9 @@
+## 1.0.3 (2025-09-19)
+
+### Bug Fixes
+
+-  removing version bump from release task ([a2b1a](https://github.com/tomasbjerre/gradle-conventions/commit/a2b1a2b91b073f5) Tomas Bjerre)  
+
 ## Unreleased ()
 
 ### Bug Fixes
