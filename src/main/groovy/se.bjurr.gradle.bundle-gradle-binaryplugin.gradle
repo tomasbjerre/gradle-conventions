@@ -28,6 +28,7 @@ releaseExtension {
 	releasePostTasks = [
 		"publish",
 		"closeAndReleaseStagingRepositories",
+		"publishPlugins"
 	]
 }
 

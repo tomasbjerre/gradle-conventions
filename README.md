@@ -13,18 +13,20 @@ Release with `./gradlew updateVersion && ./gradlew release`.
 Gradle wrapper can be downloaded with:
 
 ```sh
+GRADLE_VERSION=8.14.3
+
 cat > gradle/wrapper/gradle-wrapper.properties << EOL
 distributionBase=GRADLE_USER_HOME
 distributionPath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.14.3-bin.zip
+distributionUrl=https\://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
 networkTimeout=10000
 zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 EOL
 
 ./gradlew wrapper \
- --gradle-version=8.14.3 \
- --distribution-type=bin
+  --gradle-version="${GRADLE_VERSION}" \
+  --distribution-type=bin
 ```
 
 In many cases you can just run the `gradlew wrapper` task. But there are cases where this does not work. On such case is if you are using Java version X and the current wrapper only support version Y, the current wrapper cannot run. Se example error below:
