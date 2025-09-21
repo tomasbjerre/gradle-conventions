@@ -2,3 +2,6 @@ plugins {
 	id "java-gradle-plugin"
 	id "se.bjurr.gradle.bundle-gradle-binaryplugin" version "latest-SNAPSHOT"
 }
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11

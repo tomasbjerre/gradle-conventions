@@ -1,11 +1,9 @@
 plugins {
-	id "se.bjurr.gradle.bundle-jar" version "latest-SNAPSHOT"
-	id "se.bjurr.gradle.shadow" version "latest-SNAPSHOT" apply false
+	id "se.bjurr.gradle.bundle-jar-shadow" version "latest-SNAPSHOT"
 }
 
-staticCodeAnalysisExtension {
-	maxViolations.set(1)
-}
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 project("project1", {
 	staticCodeAnalysisExtension {
@@ -17,8 +15,6 @@ project("project1", {
 })
 
 project("project1-shadow", {
-	apply plugin: "se.bjurr.gradle.shadow"
-
 	shadowExtension {
 		relocate.set("com")
 	}

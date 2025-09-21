@@ -2,3 +2,6 @@ plugins {
 	id "groovy-gradle-plugin"
 	id "se.bjurr.gradle.bundle-jar" version "latest-SNAPSHOT"
 }
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11

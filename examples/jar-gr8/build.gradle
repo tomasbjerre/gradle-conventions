@@ -2,6 +2,9 @@ plugins {
 	id "se.bjurr.gradle.bundle-jar-gr8" version "latest-SNAPSHOT"
 }
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 dependencies {
 	implementation 'com.google.code.gson:gson:2.13.1'
 }

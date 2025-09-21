@@ -7,4 +7,4 @@ pluginManagement {
 	}
 }
 
-include "project1","project1-shadow","project1-gr8"
+include "project1","project1-shadow"
