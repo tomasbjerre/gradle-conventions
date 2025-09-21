@@ -1,3 +1,9 @@
+## 1.1.0 (2025-09-21)
+
+### Features
+
+-  mixed features in dependencies ([b2ae6](https://github.com/tomasbjerre/gradle-conventions/commit/b2ae61115f13fe5) Tomas Bjerre)  
+
 ## 1.0.6 (2025-09-19)
 
 ### Bug Fixes
