@@ -1,6 +1,6 @@
 # Gradle Conventions
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle/gradle-conventions/badge.svg)](https://maven-badges.herokuapp.com/maven-central/se.bjurr.gradle/gradle-conventions)
+[![Maven Central](https://img.shields.io/maven-central/v/se.bjurr.gradle/gradle-conventions.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/se.bjurr.gradle/gradle-conventions)
 
 Conventional Gradle plugins that I use in my projects. The ones named with `bundle` are intended to each fulfill a general use case and the others are smaller features that make up those use cases.
 

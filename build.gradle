@@ -7,7 +7,7 @@ plugins {
 	id "com.gradle.plugin-publish" version "2.0.0" apply false
 	id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "3.1.0" apply false
 	id "com.diffplug.spotless" version "7.2.1"
-	id "se.bjurr.gradle.update-versions" version "1.4.1"
+	id "se.bjurr.gradle.update-versions" version "1.5.1"
 }
 
 /**
@@ -19,7 +19,7 @@ dependencies {
 	implementation "io.github.gradle-nexus:publish-plugin:2.0.0"
 	implementation "com.gradle.publish:plugin-publish-plugin:2.0.0"
 	implementation "se.bjurr.gitchangelog:git-changelog-gradle-plugin:3.1.0"
-	implementation "se.bjurr.gradle.update-versions:se.bjurr.gradle.update-versions.gradle.plugin:1.4.1"
+	implementation "se.bjurr.gradle.update-versions:se.bjurr.gradle.update-versions.gradle.plugin:1.5.1"
 	implementation "se.bjurr.violations:violations-lib:1.159.1"
 	implementation "com.diffplug.spotless:spotless-plugin-gradle:7.2.1"
 	implementation "se.bjurr.violations:violations-gradle-plugin:4.0.1"
