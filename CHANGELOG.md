@@ -1,3 +1,9 @@
+## 1.1.1 (2025-09-22)
+
+### Bug Fixes
+
+-  universally supported emojis ([68291](https://github.com/tomasbjerre/gradle-conventions/commit/682914274eb36a5) Tomas Bjerre)  
+
 ## 1.1.0 (2025-09-21)
 
 ### Features
