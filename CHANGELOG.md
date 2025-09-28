@@ -1,3 +1,8 @@
+## 1.1.2 (2025-09-28)
+
+### Dependency updates
+
+- dependencies ([4edbc](https://github.com/tomasbjerre/gradle-conventions/commit/4edbc4d5a2cd38e) Tomas Bjerre)  
 ## 1.1.1 (2025-09-22)
 
 ### Bug Fixes
