@@ -1,3 +1,9 @@
+## 1.2.1 (2025-09-28)
+
+### Bug Fixes
+
+-  make publishNpm depend on setupNpmJavaRunnerFiles ([b9b4c](https://github.com/tomasbjerre/gradle-conventions/commit/b9b4cb068697ef6) Tomas Bjerre)  
+
 ## 1.2.0 (2025-09-28)
 
 ### Features
