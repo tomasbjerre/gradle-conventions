@@ -3,5 +3,6 @@ plugins {
 	id "se.bjurr.gradle.bundle-jar" version "latest-SNAPSHOT"
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+javaExtension {
+	javaVersion = 11
+}

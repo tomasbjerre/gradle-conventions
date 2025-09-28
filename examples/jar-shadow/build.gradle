@@ -2,11 +2,8 @@ plugins {
 	id "se.bjurr.gradle.bundle-jar-shadow" version "latest-SNAPSHOT"
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
-
-dependencies {
-	implementation 'com.google.code.gson:gson:2.13.1'
+javaExtension {
+	javaVersion = 11
 }
 
 staticCodeAnalysisExtension {
@@ -15,4 +12,8 @@ staticCodeAnalysisExtension {
 
 shadowExtension {
 	relocate.set("com")
+}
+
+dependencies {
+	implementation 'com.google.code.gson:gson:2.13.1'
 }
