@@ -106,18 +106,22 @@ jar {
 	}
 }
 
-afterEvaluate {
-	def version = project.extensions.javaExtension.javaVersion.get()
-
-	java {
-		toolchain {
-			languageVersion = JavaLanguageVersion.of(version)
+java {
+	toolchain {
+		languageVersion = project.providers.provider {
+			JavaLanguageVersion.of(project.extensions.javaExtension.javaVersion.get())
 		}
-		sourceCompatibility = JavaVersion.toVersion(version)
-		targetCompatibility = JavaVersion.toVersion(version)
 	}
+	sourceCompatibility = project.providers.provider {
+		JavaVersion.toVersion(project.extensions.javaExtension.javaVersion.get())
+	}.get()
+	targetCompatibility = project.providers.provider {
+		JavaVersion.toVersion(project.extensions.javaExtension.javaVersion.get())
+	}.get()
+}
 
-	tasks.withType(JavaCompile).configureEach {
-		options.release = version
-	}
+tasks.withType(JavaCompile).configureEach {
+	options.release.set(project.providers.provider {
+		project.extensions.javaExtension.javaVersion.get()
+	})
 }
