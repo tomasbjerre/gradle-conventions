@@ -1,3 +1,9 @@
+## 1.3.1 (2025-09-28)
+
+### Bug Fixes
+
+-  The value for property 'languageVersion' is final and cannot be changed any further. ([ff780](https://github.com/tomasbjerre/gradle-conventions/commit/ff78058de0697eb) Tomas Bjerre)  
+
 ## 1.3.0 (2025-09-28)
 
 ### Features
