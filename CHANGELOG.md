@@ -1,3 +1,9 @@
+## 1.3.0 (2025-09-28)
+
+### Features
+
+-  look for deps in gradlePluginPortal ([49b24](https://github.com/tomasbjerre/gradle-conventions/commit/49b2457439d3985) Tomas Bjerre)  
+
 ## 1.2.1 (2025-09-28)
 
 ### Bug Fixes
