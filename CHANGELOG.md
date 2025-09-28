@@ -1,3 +1,9 @@
+## 1.2.0 (2025-09-28)
+
+### Features
+
+-  javaVersion in javaExtension ([29993](https://github.com/tomasbjerre/gradle-conventions/commit/29993fcbcca697e) Tomas Bjerre)  
+
 ## 1.1.2 (2025-09-28)
 
 ### Dependency updates
