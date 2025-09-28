@@ -34,6 +34,7 @@ project.plugins.apply 'groovy'
 repositories {
 	mavenLocal()
 	mavenCentral()
+	gradlePluginPortal()
 }
 
 plugins.withType(JavaPlugin) {
