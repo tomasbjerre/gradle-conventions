@@ -63,6 +63,7 @@ task setupNpmJavaRunnerFiles() {
 		ant.replace(file: new File("package.json"), token: "PKG_DESCRIPTION", value: project.description.replaceAll("[\"']",""))
 	}
 }
+publishNpm.dependsOn setupNpmJavaRunnerFiles
 build.dependsOn setupNpmJavaRunnerFiles
 
 /**
