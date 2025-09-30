@@ -1,3 +1,9 @@
+## 1.3.2 (2025-09-30)
+
+### Bug Fixes
+
+-  include the Automatic-Module-Name and name ([d5f54](https://github.com/tomasbjerre/gradle-conventions/commit/d5f545b340ab286) Tomas Bjerre)  
+
 ## 1.3.1 (2025-09-28)
 
 ### Bug Fixes
