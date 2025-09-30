@@ -32,6 +32,8 @@ tasks.named("jar", Jar).configure { jarTask ->
 	if (mainClassValue) {
 		jarTask.manifest {
 			attributes('Main-Class': mainClassValue)
+			attributes 'name': project.name
+			attributes 'Automatic-Module-Name': project.group + "." + project.name
 		}
 	}
 

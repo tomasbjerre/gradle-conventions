@@ -83,6 +83,8 @@ tasks.register("proguardWithManifest", Jar) {
 
 		manifest {
 			attributes("Main-Class": mainClassProp.get())
+			attributes 'name': project.name
+			attributes 'Automatic-Module-Name': project.group + "." + project.name
 		}
 
 		from {
