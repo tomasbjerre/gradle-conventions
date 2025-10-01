@@ -14,7 +14,8 @@ class JavaExtension {
 		// Set defaults
 		generatedSourceFolders.convention([
 			"generatedSourceFolders",
-			"src/gen/java,src/generated/java"
+			"src/gen/java",
+			"src/generated/java"
 		])
 		extraTestSourceFolders.convention([
 			"extraTestSourceFolders",
