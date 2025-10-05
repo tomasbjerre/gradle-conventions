@@ -1,3 +1,12 @@
+## 1.3.3 (2025-10-05)
+
+### Bug Fixes
+
+-  generatedSourceFolders ([438d9](https://github.com/tomasbjerre/gradle-conventions/commit/438d9397c8e5ec4) Tomas Bjerre)  
+
+### Dependency updates
+
+- dependencies ([67b5e](https://github.com/tomasbjerre/gradle-conventions/commit/67b5e4de49f434f) Tomas Bjerre)  
 ## 1.3.2 (2025-09-30)
 
 ### Bug Fixes
