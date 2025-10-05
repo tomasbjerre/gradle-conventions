@@ -108,17 +108,19 @@ jar {
 }
 
 java {
+	withSourcesJar()
+	withJavadocJar()
 	toolchain {
 		languageVersion = project.providers.provider {
 			JavaLanguageVersion.of(project.extensions.javaExtension.javaVersion.get())
 		}
 	}
-	sourceCompatibility = project.providers.provider {
-		JavaVersion.toVersion(project.extensions.javaExtension.javaVersion.get())
-	}.get()
-	targetCompatibility = project.providers.provider {
-		JavaVersion.toVersion(project.extensions.javaExtension.javaVersion.get())
-	}.get()
+}
+
+// Configure source and target compatibility using afterEvaluate to ensure extension values are available
+project.afterEvaluate {
+	java.sourceCompatibility = JavaVersion.toVersion(project.extensions.javaExtension.javaVersion.get())
+	java.targetCompatibility = JavaVersion.toVersion(project.extensions.javaExtension.javaVersion.get())
 }
 
 tasks.withType(JavaCompile).configureEach {

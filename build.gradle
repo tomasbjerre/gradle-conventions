@@ -32,8 +32,16 @@ repositories {
 	mavenLocal()
 }
 
-sourceCompatibility = 17
-targetCompatibility = 17
+java {
+	def javaVersion = JavaLanguageVersion.of(17)
+	withSourcesJar()
+	withJavadocJar()
+	toolchain {
+		languageVersion = javaVersion
+	}
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
+}
 
 spotless {
 	groovyGradle {
