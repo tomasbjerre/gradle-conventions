@@ -109,69 +109,59 @@ def shouldGitIgnore(filename) {
 	logger.lifecycle("${filename} is ignored")
 }
 
-def runCommand(args, int attempts = 5) {
-	logger.lifecycle("Executing ${args.join(' ')}")
-	def stdout = new ByteArrayOutputStream()
-	try {
-		exec {
-			commandLine args
-			standardOutput = stdout
-		}
-		return stdout.toString().trim()
-	} catch (e) {
-		def err = stdout.toString().trim() + "\n" + "Command: ${args.join(' ')} failed with ${e.getMessage()}" + "\n" + "Trying ${attempts} more times"
-		logger.lifecycle(err)
-		if (attempts == 0) {
-			throw new RuntimeException(err, e)
-		}
-		sleep(5 * 1000)
-		return runCommand(args, attempts - 1)
+
+tasks.register('commitNewVersionTask') {
+	doLast {
+		def commitResult = new ProcessBuilder('git', 'commit', '-a', '-m', "chore(release): ${project.version} [GRADLE SCRIPT]")
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
+
+		def pushResult = new ProcessBuilder('git', 'push')
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
+
+		logger.lifecycle("Git commit exit code: ${commitResult}, push exit code: ${pushResult}")
+
+		def tagResult = new ProcessBuilder('git', 'tag', "${project.version}")
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
+
+		def pushTagResult = new ProcessBuilder('git', 'push', 'origin', "${project.version}")
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
+
+		def pushAllTagsResult = new ProcessBuilder('git', 'push', '--tags')
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
+
+		logger.lifecycle("Git tag exit code: ${tagResult}, push tag exit code: ${pushTagResult}, push all tags exit code: ${pushAllTagsResult}")
 	}
 }
 
-task commitNewVersionTask() {
+tasks.register('commitChangelogTask') {
 	doLast {
-		try {
-			runCommand([
-				'git',
-				'commit',
-				'-a',
-				'-m',
-				"chore(release): ${version} [GRADLE SCRIPT]"
-			])
-			runCommand(['git', 'push'])
-		} catch (e) {
-			logger.error("Unable commit/push new version, skipping that.",e.getMessage())
-		}
+		int commitResult = new ProcessBuilder('git', 'commit', '-a', '-m', "chore(release): Updating changelog with ${project.version} [GRADLE SCRIPT]")
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
 
-		try {
-			runCommand(['git', 'tag', "${version}"])
-			runCommand([
-				'git',
-				'push',
-				'origin',
-				"${version}"
-			])
-			runCommand(['git', 'push', '--tags'])
-		} catch (e) {
-			logger.error("Unable tag new version, skipping that.",e.getMessage())
-		}
-	}
-}
+		def pushResult = new ProcessBuilder('git', 'push')
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
 
-task commitChangelogTask() {
-	doLast {
-		try {
-			runCommand([
-				'git',
-				'commit',
-				'-a',
-				'-m',
-				"chore(release): Updating changelog with ${version} [GRADLE SCRIPT]"
-			])
-			runCommand(['git', 'push'])
-		} catch (e) {
-			logger.error("Unable commit/push changelog, skipping that.",e.getMessage())
-		}
+		logger.lifecycle("Git commit exit code: ${commitResult}, push exit code: ${pushResult}")
 	}
 }

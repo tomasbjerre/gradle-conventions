@@ -20,9 +20,9 @@ dependencies {
 	implementation "com.gradle.publish:plugin-publish-plugin:2.0.0"
 	implementation "se.bjurr.gitchangelog:git-changelog-gradle-plugin:3.1.1"
 	implementation "se.bjurr.gradle.update-versions:se.bjurr.gradle.update-versions.gradle.plugin:1.5.1"
-	implementation "se.bjurr.violations:violations-lib:1.160.1"
+	implementation "se.bjurr.violations:violations-lib:1.160.2"
 	implementation "com.diffplug.spotless:spotless-plugin-gradle:8.0.0"
-	implementation "se.bjurr.violations:violations-gradle-plugin:4.1.0"
+	implementation "se.bjurr.violations:violations-gradle-plugin:4.1.2"
 	implementation "com.github.spotbugs.snom:spotbugs-gradle-plugin:6.4.2"
 }
 
