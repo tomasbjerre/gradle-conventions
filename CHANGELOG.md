@@ -1,3 +1,10 @@
+## 1.3.4 (2025-10-05)
+
+### Bug Fixes
+
+-  gradle 9 ([97e81](https://github.com/tomasbjerre/gradle-conventions/commit/97e81ae8f5d5f6e) Tomas Bjerre)  
+-  pick java version ([d77ff](https://github.com/tomasbjerre/gradle-conventions/commit/d77ff198c5bf835) Tomas Bjerre)  
+
 ## 1.3.3 (2025-10-05)
 
 ### Bug Fixes
