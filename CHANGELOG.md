@@ -1,3 +1,10 @@
+## 1.3.8 (2025-10-06)
+
+### Bug Fixes
+
+-  avoid formatting generated folders ([db718](https://github.com/tomasbjerre/gradle-conventions/commit/db718068e316590) Tomas Bjerre)  
+-  Gradle 9 ([6bf73](https://github.com/tomasbjerre/gradle-conventions/commit/6bf73b3914871c6) Tomas Bjerre)  
+
 ## 1.3.7 (2025-10-06)
 
 ### Bug Fixes
