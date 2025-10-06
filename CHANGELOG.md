@@ -1,3 +1,9 @@
+## 1.3.7 (2025-10-06)
+
+### Bug Fixes
+
+-  Shadow with Gradle 9 ([c7c98](https://github.com/tomasbjerre/gradle-conventions/commit/c7c9818321d6c47) Tomas Bjerre)  
+
 ## 1.3.6 (2025-10-06)
 
 ### Bug Fixes
