@@ -1,5 +1,5 @@
 plugins {
-	id "se.bjurr.gradle.bundle-jar-shadow" version "latest-SNAPSHOT"
+	id "se.bjurr.gradle.bundle-jar" version "latest-SNAPSHOT"
 }
 
 javaExtension {
@@ -16,6 +16,8 @@ project("project1", {
 })
 
 project("project1-shadow", {
+	apply plugin: 'se.bjurr.gradle.shadow'
+
 	shadowExtension {
 		relocate.set("com")
 	}
