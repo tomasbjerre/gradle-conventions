@@ -3,6 +3,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.bundling.Jar
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
+// --- Shadow Extension ---
 class ShadowExtension {
 	final Property<String> relocate
 	final Property<String> mainClass
@@ -28,23 +29,7 @@ project.plugins.apply 'java-library'
 project.plugins.apply 'maven-publish'
 
 tasks.named('jar') { Jar jarTask ->
-	def mainClassValue = project.extensions.shadowExtension.mainClass.orNull
-	if (mainClassValue) {
-		jarTask.manifest {
-			attributes(
-					'Main-Class': mainClassValue,
-					'name': project.name,
-					'Automatic-Module-Name': "${project.group}.${project.name}"
-					)
-		}
-	}
-
-	def folder = project.layout.projectDirectory
-			.dir(project.extensions.shadowExtension.jarResourcesFolder.get())
-			.asFile
-	if (folder.exists()) {
-		jarTask.from(folder)
-	}
+	jarTask.enabled = false
 }
 
 java {
@@ -52,58 +37,66 @@ java {
 	withJavadocJar()
 }
 
-tasks.named('shadowJar') { ShadowJar shadowJarTask ->
-	shadowJarTask.archiveBaseName.set(project.name)
-	shadowJarTask.archiveVersion.set(project.version)
-	shadowJarTask.archiveClassifier.set('')
+project.afterEvaluate {
+	tasks.named('shadowJar') { ShadowJar shadowJarTask ->
+		shadowJarTask.archiveBaseName.set(project.name)
+		shadowJarTask.archiveVersion.set(project.version)
+		shadowJarTask.archiveClassifier.set('')
 
-	doFirst {
-		def mainClassValue = project.extensions.shadowExtension.mainClass.orNull
-		if (mainClassValue) {
-			shadowJarTask.manifest {
-				attributes('Main-Class': mainClassValue)
+		shadowJarTask.archiveFileName.set("${project.name}-${project.version}.jar")
+
+		doFirst {
+			def mainClassValue = project.extensions.shadowExtension.mainClass.orNull
+			if (mainClassValue) {
+				shadowJarTask.manifest {
+					attributes('Main-Class': mainClassValue)
+				}
 			}
-		}
 
-		project.extensions.shadowExtension.relocate.get().tokenize(',').each { relocation ->
-			if (!relocation) return
-				def (relocateFrom, relocateTo) = relocation.contains(":")
-						? relocation.split(":") as List
-						: [
-							relocation,
-							"${project.group}.${project.name}.${relocation}".replaceAll("[^a-zA-Z.]", "")
-						]
-			logger.lifecycle("Relocating ${relocateFrom} to ${relocateTo}")
-			shadowJarTask.relocate(relocateFrom, relocateTo)
+			project.extensions.shadowExtension.relocate.get().tokenize(',').each { relocation ->
+				if (!relocation) return
+					def (relocateFrom, relocateTo) = relocation.contains(":")
+							? relocation.split(":") as List
+							: [
+								relocation,
+								"${project.group}.${project.name}.${relocation}".replaceAll("[^a-zA-Z.]", "")
+							]
+				logger.lifecycle("Relocating ${relocateFrom} to ${relocateTo}")
+				shadowJarTask.relocate(relocateFrom, relocateTo)
+			}
 		}
 	}
 }
 
-publishing {
-	publications {
-		mavenJava(MavenPublication) { pub ->
-			logger.lifecycle("shadow jar in maven publication")
-			artifacts.clear()
-			artifact(tasks.named("shadowJar")) { classifier = null }
-			artifact(tasks.named("javadocJar"))
-			artifact(tasks.named("sourcesJar"))
+project.afterEvaluate {
+	publishing {
+		publications {
+			if (publications.findByName('mavenJava')) {
+				publications.remove(publications.mavenJava)
+			}
 
-			groupId project.group.toString().replaceAll("[\"']", "")
-			artifactId project.name.replaceAll("[\"']", "")
-			version project.version
+			mavenJava(MavenPublication) {
+				artifact(shadowJar) {
+					classifier = ''
+				}
 
-			versionMapping {
-				allVariants {
-					fromResolutionResult()
+				artifact(sourcesJar) {
+					classifier = 'sources'
+				}
+				artifact(javadocJar) {
+					classifier = 'javadoc'
+				}
+
+				pom {
+					name = project.name
+					description = project.description ?: project.name
+					groupId = project.group
+					artifactId = project.name
+					version = project.version
 				}
 			}
 		}
 	}
-}
-
-plugins.withId("java") {
-	configurations.named("runtimeElements") { it.outgoing.artifact(tasks.named("shadowJar")) }
-	configurations.named("apiElements") { it.outgoing.artifact(tasks.named("shadowJar")) }
 }
 
 tasks.named("build") { it.dependsOn(tasks.named("shadowJar")) }
