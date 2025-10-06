@@ -7,9 +7,18 @@ on:
   pull_request:
 
 jobs:
-  run-test-script:
+  build:
     runs-on: ubuntu-latest
-
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ["17", "21", "25"]
+        os: ["ubuntu-latest"]
+    name: Java ${{ matrix.Java }} (${{ matrix.os }})
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
