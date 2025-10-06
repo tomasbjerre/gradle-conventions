@@ -13,7 +13,7 @@ Release with `./gradlew updateVersion && ./gradlew release`.
 Gradle wrapper can be downloaded with:
 
 ```sh
-GRADLE_VERSION=8.14.3
+GRADLE_VERSION=9.1.0
 
 cat > gradle/wrapper/gradle-wrapper.properties << EOL
 distributionBase=GRADLE_USER_HOME
