@@ -8,7 +8,12 @@ class FormattingExtension {
 		formattingExcludedPatterns = objects.listProperty(String)
 
 		// Set defaults
-		formattingExcludedPatterns.convention([])
+		formattingExcludedPatterns.convention([
+			"generatedSourceFolders",
+			"src/gen/java",
+			"src/generated/java",
+			"src/generated-source/java"
+		])
 	}
 }
 
