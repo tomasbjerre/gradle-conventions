@@ -3,7 +3,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.bundling.Jar
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-// --- Shadow Extension ---
 class ShadowExtension {
 	final Property<String> relocate
 	final Property<String> mainClass
@@ -71,11 +70,9 @@ project.afterEvaluate {
 project.afterEvaluate {
 	publishing {
 		publications {
-			if (publications.findByName('mavenJava')) {
-				publications.remove(publications.mavenJava)
-			}
-
 			mavenJava(MavenPublication) {
+				artifacts.clear()
+
 				artifact(shadowJar) {
 					classifier = ''
 				}
