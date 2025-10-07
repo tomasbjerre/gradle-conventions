@@ -96,6 +96,7 @@ tasks.register('release', GradleBuild) {
 		}
 
 		tasks += project.extensions.releaseExtension.releasePostTasks.get()
+		logger.lifecycle("Releasing with tasks: ${tasks}")
 	}
 }
 
