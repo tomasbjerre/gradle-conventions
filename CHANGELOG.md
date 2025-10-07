@@ -1,3 +1,9 @@
+## 1.3.11 (2025-10-07)
+
+### Bug Fixes
+
+-  details in package.json for command ([1e6ab](https://github.com/tomasbjerre/gradle-conventions/commit/1e6abf5c072bc5b) Tomas Bjerre)  
+
 ## 1.3.10 (2025-10-07)
 
 ### Bug Fixes
