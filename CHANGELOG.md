@@ -1,3 +1,9 @@
+## 1.4.1 (2025-10-07)
+
+### Bug Fixes
+
+-  npm publishing ([00ea1](https://github.com/tomasbjerre/gradle-conventions/commit/00ea1467cfbd449) Tomas Bjerre)  
+
 ## 1.4.0 (2025-10-07)
 
 ### Features
