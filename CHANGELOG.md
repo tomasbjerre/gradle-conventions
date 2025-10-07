@@ -1,3 +1,9 @@
+## 1.3.12 (2025-10-07)
+
+### Bug Fixes
+
+-  node 22 support for command ([583d8](https://github.com/tomasbjerre/gradle-conventions/commit/583d8d0275b3e36) Tomas Bjerre)  
+
 ## 1.3.11 (2025-10-07)
 
 ### Bug Fixes
