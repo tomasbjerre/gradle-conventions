@@ -60,9 +60,9 @@ task setupNpmJavaRunnerFiles() {
 		"""
 		ant.replace(file: new File("package.json"), token: "PKG_NAME", value: project.name)
 		ant.replace(file: new File("package.json"), token: "PKG_VERSION", value: version)
-		ant.replace(file: new File("package.json"), token: "PKG_WEBSITE", value: project.extensions.npmJavaRunnerExtension.website)
-		ant.replace(file: new File("package.json"), token: "PKG_GIT", value: project.extensions.npmJavaRunnerExtension.vcsUrl)
-		ant.replace(file: new File("package.json"), token: "PKG_AUTHOR", value: project.extensions.npmJavaRunnerExtension.developerName)
+		ant.replace(file: new File("package.json"), token: "PKG_WEBSITE", value: project.extensions.npmJavaRunnerExtension.website.get())
+		ant.replace(file: new File("package.json"), token: "PKG_GIT", value: project.extensions.npmJavaRunnerExtension.vcsUrl.get())
+		ant.replace(file: new File("package.json"), token: "PKG_AUTHOR", value: project.extensions.npmJavaRunnerExtension.developerName.get())
 		ant.replace(file: new File("package.json"), token: "PKG_DESCRIPTION", value: project.description.replaceAll("[\"']",""))
 	}
 }
