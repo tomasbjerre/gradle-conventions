@@ -1,3 +1,9 @@
+## 1.4.0 (2025-10-07)
+
+### Features
+
+-  log releasing tasks ([c1082](https://github.com/tomasbjerre/gradle-conventions/commit/c1082a0a395f78a) Tomas Bjerre)  
+
 ## 1.3.12 (2025-10-07)
 
 ### Bug Fixes
