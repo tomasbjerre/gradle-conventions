@@ -54,7 +54,7 @@ task setupNpmJavaRunnerFiles() {
 			"bin": "./index.js",
 			"license": "Apache 2",
 			"dependencies": {
-				"npm-java-runner": "0.0.17"
+				"npm-java-runner": "2.0.0"
 			}
 		}
 		"""
