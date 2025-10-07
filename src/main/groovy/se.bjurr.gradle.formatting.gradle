@@ -28,11 +28,11 @@ spotless {
 	java {
 		target '**/*.java'
 		googleJavaFormat()
-		targetExclude project.extensions.formatting.formattingExcludedPatterns
+		targetExclude { project.extensions.formatting.formattingExcludedPatterns.get() }
 	}
 	groovyGradle {
 		target '*.gradle', 'src/main/**/*.gradle'
-		targetExclude project.extensions.formatting.formattingExcludedPatterns
+		targetExclude { project.extensions.formatting.formattingExcludedPatterns.get() }
 		greclipse()
 	}
 	json {
