@@ -23,12 +23,14 @@ project.extensions.create('npmJavaRunnerExtension', NpmJavaRunnerExtension, proj
 project.plugins.apply 'maven-publish'
 
 task publishNpm() {
-	def pushAllTagsResult = new ProcessBuilder('npm', 'publish')
-			.directory(project.projectDir)
-			.inheritIO()
-			.start()
-			.waitFor()
-	logger.lifecycle("NPM exit code: ${pushAllTagsResult}")
+	doLast {
+		def pushAllTagsResult = new ProcessBuilder('npm', 'publish')
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
+		logger.lifecycle("NPM exit code: ${pushAllTagsResult}")
+	}
 }
 
 task setupNpmJavaRunnerFiles() {
