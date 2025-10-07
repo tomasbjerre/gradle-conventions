@@ -1,3 +1,9 @@
+## 1.3.10 (2025-10-07)
+
+### Bug Fixes
+
+-  make formattingExcludedPatterns lazy ([2380e](https://github.com/tomasbjerre/gradle-conventions/commit/2380e4d0248fb5e) Tomas Bjerre)  
+
 ## 1.3.9 (2025-10-07)
 
 ### Bug Fixes
