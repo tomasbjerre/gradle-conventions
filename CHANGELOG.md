@@ -1,3 +1,9 @@
+## 1.4.2 (2025-10-28)
+
+### Bug Fixes
+
+-  correct sca folder ([b2f3c](https://github.com/tomasbjerre/gradle-conventions/commit/b2f3cbecb71c354) Tomas Bjerre)  
+
 ## 1.4.1 (2025-10-07)
 
 ### Bug Fixes
