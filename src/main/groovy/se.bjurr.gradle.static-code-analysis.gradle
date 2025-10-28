@@ -254,14 +254,14 @@ task violations(type: se.bjurr.violations.gradle.plugin.ViolationsTask) {
 	printViolations.set(true)
 
 	violationConfig()
-			.setFolder(projectDir.path)
+			.setFolder("${buildDir}")
 			.setParser(se.bjurr.violations.lib.reports.Parser.FINDBUGS)
-			.setPattern(".*/build/reports/spotbugs/.*\\.xml\$")
+			.setPattern(".*/reports/spotbugs/.*\\.xml\$")
 			.setReporter("Spotbugs")
 	violationConfig()
-			.setFolder(projectDir.path)
+			.setFolder("${buildDir}")
 			.setParser(se.bjurr.violations.lib.reports.Parser.PMD)
-			.setPattern(".*/build/reports/pmd/.*\\.xml\$")
+			.setPattern(".*/reports/pmd/.*\\.xml\$")
 			.setReporter("PMD")
 }
 
