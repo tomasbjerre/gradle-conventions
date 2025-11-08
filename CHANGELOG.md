@@ -1,3 +1,9 @@
+## 1.4.5 (2025-11-08)
+
+### Bug Fixes
+
+-  custom sign properties ([905c4](https://github.com/tomasbjerre/gradle-conventions/commit/905c43436e1187a) Tomas Bjerre)  
+
 ## 1.4.4 (2025-11-08)
 
 ### Bug Fixes
