@@ -32,11 +32,11 @@ signing {
 	project.afterEvaluate {
 		def signingKeyProvider = project.extensions.signExtension.signingKeyEnvOrProp.flatMap { name ->
 			project.providers.environmentVariable(name)
-					.orElse(project.provider { project.findProperty(name) as String })
+				.orElse(project.provider { project.findProperty(name) as String })
 		}
 		def signingPasswordProvider = project.extensions.signExtension.signingPasswordEnvOrProp.flatMap { name ->
 			project.providers.environmentVariable(name)
-					.orElse(project.provider { project.findProperty(name) as String })
+				.orElse(project.provider { project.findProperty(name) as String })
 		}
 		signing {
 			if (signingKeyProvider.present && signingPasswordProvider.present) {
