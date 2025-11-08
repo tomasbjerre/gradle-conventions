@@ -1,3 +1,9 @@
+## 1.5.1 (2025-11-08)
+
+### Bug Fixes
+
+-  signing when publishToMavenLocal ([8eeb0](https://github.com/tomasbjerre/gradle-conventions/commit/8eeb06ee5b31f5e) Tomas Bjerre)  
+
 ## 1.5.0 (2025-11-08)
 
 ### Features
