@@ -1,3 +1,9 @@
+## 1.5.0 (2025-11-08)
+
+### Features
+
+-  log if any singing prop or env was found ([bc934](https://github.com/tomasbjerre/gradle-conventions/commit/bc934da81abb787) Tomas Bjerre)  
+
 ## 1.4.5 (2025-11-08)
 
 ### Bug Fixes
