@@ -48,16 +48,17 @@ signing {
 
 		def signingKeyProvider = getEnvOrProp(project.extensions.signExtension.signingKeyEnvOrProp.get())
 		def signingPasswordProvider = getEnvOrProp(project.extensions.signExtension.signingPasswordEnvOrProp.get())
-		signing {
-			if (signingKeyProvider.present && signingPasswordProvider.present) {
-				logger.lifecycle("Configuring signing key and password")
+
+		if (signingKeyProvider.present && signingPasswordProvider.present) {
+			logger.lifecycle("Configuring signing key and password")
+			signing {
 				useInMemoryPgpKeys(signingKeyProvider.get(), signingPasswordProvider.get())
-			} else {
-				logger.lifecycle("Not configuring signing key and password")
 			}
+			sign(publishing.publications)
+		} else {
+			logger.lifecycle("Not configuring signing key and password")
 		}
 	}
-	sign(publishing.publications)
 }
 
 
