@@ -1,3 +1,9 @@
+## 1.4.4 (2025-11-08)
+
+### Bug Fixes
+
+-  memory leak ([4a84b](https://github.com/tomasbjerre/gradle-conventions/commit/4a84b9b2eeaa57e) Tomas Bjerre)  
+
 ## 1.4.3 (2025-11-08)
 
 ### Dependency updates
