@@ -98,6 +98,10 @@ allprojects {
 	tasks.withType(Javadoc) {
 		options.addStringOption('Xdoclint:none', '-quiet')
 	}
+
+	tasks.withType(Test).configureEach {
+		useJUnitPlatform()
+	}
 }
 
 jar {

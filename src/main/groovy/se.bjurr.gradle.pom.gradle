@@ -1,32 +1,62 @@
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ListProperty
 
 class PomExtension {
 	final Property<String> website
 	final Property<String> vcsUrl
 	final Property<String> licenseName
 	final Property<String> licenseUrl
-	final Property<String> developerId
-	final Property<String> developerName
-	final Property<String> developerEmail
+	final ListProperty<Map<String, String>> developers
 
 	PomExtension(ObjectFactory objects, Project project) {
 		website = objects.property(String)
 		vcsUrl = objects.property(String)
 		licenseName = objects.property(String)
 		licenseUrl = objects.property(String)
-		developerId = objects.property(String)
-		developerName = objects.property(String)
-		developerEmail = objects.property(String)
+		developers = objects.listProperty(Map)
 
-		// Set defaults
-		website.convention("https://github.com/tomasbjerre/" + project.name)
-		vcsUrl.convention("https://github.com/tomasbjerre/" + project.name)
+		def gitUrl = project.provider {
+			try {
+				def process = [
+					'git',
+					'config',
+					'--get',
+					'remote.origin.url'
+				].execute()
+				process.waitFor()
+				def url = process.text.trim()
+				return url ?: "https://github.com/tomasbjerre/${project.name}"
+			} catch (Exception e) {
+				project.logger.warn("Could not get git remote URL: " + e.getMessage())
+				return "https://github.com/tomasbjerre/${project.name}"
+			}
+		}
+		def websiteUrl = gitUrl.map { url ->
+			if (!url) {
+				return url
+			}
+			if (url.startsWith('git@')) {
+				url = url.replaceFirst(':', '/')
+						.replaceFirst('git@', 'https://')
+			}
+			if (url.endsWith('.git')) {
+				url = url.substring(0, url.length() - 4)
+			}
+			return url
+		}
+
+		website.convention(websiteUrl)
+		vcsUrl.convention(gitUrl)
 		licenseName.convention("The Apache Software License, Version 2.0")
 		licenseUrl.convention("http://www.apache.org/licenses/LICENSE-2.0.txt")
-		developerId.convention("tomasbjerre")
-		developerName.convention("Tomas Bjerre")
-		developerEmail.convention("tomas.bjerre85@gmail.com")
+		developers.convention([
+			[
+				id: "tomasbjerre",
+				name: "Tomas Bjerre",
+				email: "tomas.bjerre85@gmail.com"
+			]
+		])
 	}
 }
 
@@ -44,14 +74,18 @@ tasks.withType(GenerateMavenPom).configureEach { task ->
 
 		task.pom.withXml {
 			def root = asNode()
-			root.appendNode('url', project.extensions.pomExtension.website.get())
+			def websiteUrl = project.extensions.pomExtension.website.get();
+			def vcsUrl = project.extensions.pomExtension.vcsUrl.get();
+			logger.info("Using websiteUrl ${websiteUrl}")
+			logger.info("Using vcsUrl ${vcsUrl}")
+			root.appendNode('url', websiteUrl)
 			root.appendNode('inceptionYear', (1900 + new Date().year).toString())
 
 			root.children().last() + {
 				scm {
-					url project.extensions.pomExtension.website.get()
-					connection project.extensions.pomExtension.vcsUrl.get()
-					developerConnection project.extensions.pomExtension.vcsUrl.get()
+					url websiteUrl
+					connection vcsUrl
+					developerConnection vcsUrl
 				}
 
 				licenses {
@@ -63,10 +97,12 @@ tasks.withType(GenerateMavenPom).configureEach { task ->
 				}
 
 				developers {
-					developer {
-						id project.extensions.pomExtension.developerId.get()
-						name project.extensions.pomExtension.developerName.get()
-						email project.extensions.pomExtension.developerEmail.get()
+					project.extensions.pomExtension.developers.get().each { dev ->
+						developer {
+							id dev.id
+							name dev.name
+							email dev.email
+						}
 					}
 				}
 			}
