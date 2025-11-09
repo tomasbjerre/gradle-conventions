@@ -1,3 +1,9 @@
+## 1.6.0 (2025-11-09)
+
+### Features
+
+-  junit and more automation in pom ([1f127](https://github.com/tomasbjerre/gradle-conventions/commit/1f127a995488ddc) Tomas Bjerre)  
+
 ## 1.5.1 (2025-11-08)
 
 ### Bug Fixes
