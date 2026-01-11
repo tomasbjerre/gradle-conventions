@@ -25,7 +25,6 @@ class ReleaseExtension {
 }
 
 project.extensions.create('releaseExtension', ReleaseExtension, project.objects)
-project.plugins.apply 'com.vanniktech.maven.publish.base'
 project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 
 gitChangelogSemanticVersion {
@@ -38,9 +37,12 @@ gitChangelog {
 	prependToFile = project.extensions.releaseExtension.prependChangelogToFile
 }
 
+allprojects {
+	project.plugins.apply 'com.vanniktech.maven.publish.base'
 
-mavenPublishing {
-	publishToMavenCentral()
+	mavenPublishing {
+		publishToMavenCentral()
+	}
 }
 
 /**
