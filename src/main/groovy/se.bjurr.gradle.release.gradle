@@ -9,35 +9,23 @@ class ReleaseExtension {
 	 */
 	final Property<Boolean> prependChangelogToFile
 	final Property<Boolean> updateChangelog
-	final Property<String> mavenRepositoryUrl
-	final Property<String> nexusUsernameEnvOrProp
-	final Property<String> nexusPasswordEnvOrProp
-	final Property<String> nexusStagingProfileEnvOrProp
 	final ListProperty<String> releasePostTasks
 
 	ReleaseExtension(ObjectFactory objects) {
 		ignoreCommitsIfMessageMatches = objects.property(String)
 		prependChangelogToFile = objects.property(Boolean)
 		updateChangelog = objects.property(Boolean)
-		mavenRepositoryUrl = objects.property(String)
-		nexusUsernameEnvOrProp = objects.property(String)
-		nexusPasswordEnvOrProp = objects.property(String)
-		nexusStagingProfileEnvOrProp = objects.property(String)
 		releasePostTasks = objects.listProperty(String)
 
 		// Set defaults
 		ignoreCommitsIfMessageMatches.convention("^\\[maven-release-plugin\\].*|^\\[Gradle Release Plugin\\].*|^Merge.*|.*\\[GRADLE SCRIPT\\].*")
 		prependChangelogToFile.convention(true)
 		updateChangelog.convention(true)
-		mavenRepositoryUrl.convention("https://ossrh-staging-api.central.sonatype.com/service/local/")
-		nexusUsernameEnvOrProp.convention("nexusUsername")
-		nexusPasswordEnvOrProp.convention("nexusPassword")
-		nexusStagingProfileEnvOrProp.convention("se.bjurr")
 	}
 }
 
 project.extensions.create('releaseExtension', ReleaseExtension, project.objects)
-project.plugins.apply "io.github.gradle-nexus.publish-plugin"
+project.plugins.apply 'com.vanniktech.maven.publish.base'
 project.plugins.apply "se.bjurr.gitchangelog.git-changelog-gradle-plugin"
 
 gitChangelogSemanticVersion {
@@ -50,26 +38,9 @@ gitChangelog {
 	prependToFile = project.extensions.releaseExtension.prependChangelogToFile
 }
 
-plugins.withId("io.github.gradle-nexus.publish-plugin") {
-	nexusPublishing {
-		repositories {
-			sonatype {
-				nexusUrl.set(project.provider { uri(project.extensions.releaseExtension.mavenRepositoryUrl) })
-				username.set(project.providers
-						.environmentVariable(project.extensions.releaseExtension.nexusUsernameEnvOrProp)
-						.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.nexusUsernameEnvOrProp.get()) })
-						)
-				password.set(project.providers
-						.environmentVariable(project.extensions.releaseExtension.nexusPasswordEnvOrProp)
-						.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.nexusPasswordEnvOrProp.get()) })
-						)
-				stagingProfileId.set(project.providers
-						.environmentVariable(project.extensions.releaseExtension.nexusStagingProfileEnvOrProp)
-						.orElse(project.provider { project.findProperty(project.extensions.releaseExtension.nexusStagingProfileEnvOrProp.get()) })
-						)
-			}
-		}
-	}
+
+mavenPublishing {
+	publishToMavenCentral()
 }
 
 /**

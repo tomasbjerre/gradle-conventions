@@ -20,8 +20,5 @@ allprojects {
 }
 
 releaseExtension {
-	releasePostTasks = [
-		"publish",
-		"closeAndReleaseStagingRepositories",
-	]
+	releasePostTasks = ["publishToMavenCentral",]
 }

@@ -6,8 +6,6 @@ Conventional Gradle plugins that I use in my projects. The ones named with `bund
 
 See documentation [in the code](/src/main/groovy) and also [running examples](/examples).
 
-Release with `./gradlew updateVersion && ./gradlew release`.
-
 ## Requirements
 
 Gradle wrapper can be downloaded with:
@@ -59,3 +57,9 @@ Could not compile build file 'X/build.gradle'.
   java.lang.IllegalArgumentException: Unsupported class file major version 65
         at groovyjarjarasm.asm.ClassReader.<init>(ClassReader.java:196)
 ```
+
+## Releasing
+
+It reads properties for Central. See: https://github.com/vanniktech/gradle-maven-publish-plugin/blob/main/docs/central.md#secrets
+
+Release with `./gradlew updateVersion && ./gradlew release`.
