@@ -1,3 +1,9 @@
+## 2.0.2 (2026-01-11)
+
+### Bug Fixes
+
+-  trying to fix multiproject artifacts to Central ([b5a2a](https://github.com/tomasbjerre/gradle-conventions/commit/b5a2a40beccb170) Tomas Bjerre)  
+
 ## 2.0.1 (2026-01-11)
 
 ### Bug Fixes
