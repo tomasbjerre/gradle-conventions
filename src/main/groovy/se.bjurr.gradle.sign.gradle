@@ -26,7 +26,7 @@ project.plugins.apply 'signing'
 signing {
 
 	required {
-		gradle.taskGraph.hasTask("publishToMavenCentral")
+		gradle.taskGraph.hasTask("publishAndReleaseToMavenCentral")
 	}
 
 	project.afterEvaluate {

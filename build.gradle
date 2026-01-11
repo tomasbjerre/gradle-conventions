@@ -62,6 +62,6 @@ tasks.named("release") {
 		"publishToMavenLocal",
 		'gitChangelog',
 		'commitChangelogTask',
-		"publishToMavenCentral",
+		"publishAndReleaseToMavenCentral",
 	]
 }
