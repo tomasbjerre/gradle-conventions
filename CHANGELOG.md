@@ -1,3 +1,9 @@
+## 2.0.1 (2026-01-11)
+
+### Bug Fixes
+
+-  publishAndReleaseToMavenCentral ([86314](https://github.com/tomasbjerre/gradle-conventions/commit/863145f007151bc) Tomas Bjerre)  
+
 ## 2.0.0 (2026-01-11)
 
 ### Breaking changes
