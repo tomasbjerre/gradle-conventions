@@ -1,3 +1,13 @@
+## 2.0.0 (2026-01-11)
+
+### Breaking changes
+
+-  publishing using new Central API:s ([2549a](https://github.com/tomasbjerre/gradle-conventions/commit/2549abd5726b33a) Tomas Bjerre)  
+
+### Features
+
+-  publishing using new Central API:s ([2549a](https://github.com/tomasbjerre/gradle-conventions/commit/2549abd5726b33a) Tomas Bjerre)  
+
 ## 1.6.0 (2025-11-09)
 
 ### Features
