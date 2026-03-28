@@ -1,3 +1,8 @@
+## 2.0.3 (2026-03-28)
+
+### Dependency updates
+
+- dependencies ([a096b](https://github.com/tomasbjerre/gradle-conventions/commit/a096b824352db21) Tomas Bjerre)  
 ## 2.0.2 (2026-01-11)
 
 ### Bug Fixes
