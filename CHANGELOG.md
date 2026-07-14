@@ -1,3 +1,8 @@
+## Unreleased ()
+
+### Dependency updates
+
+- latest update-versions plugin ([8707d](https://github.com/tomasbjerre/gradle-conventions/commit/8707dad41f9e5fc) Tomas Bjerre)  
 ## 2.0.3 (2026-03-28)
 
 ### Dependency updates
