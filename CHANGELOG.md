@@ -1,3 +1,12 @@
+## 2.0.4 (2026-07-14)
+
+### Bug Fixes
+
+-  nump ([b14d2](https://github.com/tomasbjerre/gradle-conventions/commit/b14d25495e36afe) Tomas Bjerre)  
+
+### Dependency updates
+
+- latest update-versions plugin ([8707d](https://github.com/tomasbjerre/gradle-conventions/commit/8707dad41f9e5fc) Tomas Bjerre)  
 ## Unreleased ()
 
 ### Bug Fixes
