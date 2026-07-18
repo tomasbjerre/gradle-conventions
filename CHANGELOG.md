@@ -1,3 +1,9 @@
+## 2.1.0 (2026-07-18)
+
+### Features
+
+-  setMissingVersions, downgradeUnresolvedDependencies ([ba59e](https://github.com/tomasbjerre/gradle-conventions/commit/ba59e9bd71804b3) Tomas Bjerre)  
+
 ## 2.0.4 (2026-07-14)
 
 ### Bug Fixes
