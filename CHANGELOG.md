@@ -1,3 +1,9 @@
+## 2.1.1 (2026-07-30)
+
+### Bug Fixes
+
+-  trying to fix it doing downgrades when current version exists ([c2433](https://github.com/tomasbjerre/gradle-conventions/commit/c2433c166145b4e) Tomas Bjerre)  
+
 ## 2.1.0 (2026-07-18)
 
 ### Features
