@@ -1,3 +1,12 @@
+## 2.2.1 (2026-09-13)
+
+### Bug Fixes
+
+-  using SIGNING_PASSWORD to replace signing.password that does not work in Github actions ([bfb83](https://github.com/tomasbjerre/gradle-conventions/commit/bfb833eb5b2d4e7) Tomas Bjerre)  
+
+### Dependency updates
+
+- updating dependencies ([34292](https://github.com/tomasbjerre/gradle-conventions/commit/34292a9d4b28cbc) Tomas Bjerre)  
 ## 2.2.0 (2026-09-13)
 
 ### Features
