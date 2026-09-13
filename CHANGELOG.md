@@ -1,3 +1,9 @@
+## 2.2.0 (2026-09-13)
+
+### Features
+
+-  avoiding violations-lib fat jar to reduce file sizes ([836b5](https://github.com/tomasbjerre/gradle-conventions/commit/836b5830ad0cecc) Tomas Bjerre)  
+
 ## 2.1.2 (2026-09-13)
 
 ### Dependency updates
