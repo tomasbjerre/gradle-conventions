@@ -16,7 +16,7 @@ class SignExtension {
 
 		// Set defaults
 		signingKeyEnvOrProp.convention("signingkey")
-		signingPasswordEnvOrProp.convention("signing.password")
+		signingPasswordEnvOrProp.convention("SIGNING_PASSWORD")
 	}
 }
 
