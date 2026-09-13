@@ -1,3 +1,8 @@
+## 2.1.2 (2026-09-13)
+
+### Dependency updates
+
+- update dependencies ([c3988](https://github.com/tomasbjerre/gradle-conventions/commit/c398823c9025372) Tomas Bjerre)  
 ## 2.1.1 (2026-07-30)
 
 ### Bug Fixes
