@@ -11,7 +11,7 @@ See documentation [in the code](/src/main/groovy) and also [running examples](/e
 Gradle wrapper can be downloaded with:
 
 ```sh
-GRADLE_VERSION=9.1.0
+GRADLE_VERSION=9.7.1
 
 cat > gradle/wrapper/gradle-wrapper.properties << EOL
 distributionBase=GRADLE_USER_HOME
