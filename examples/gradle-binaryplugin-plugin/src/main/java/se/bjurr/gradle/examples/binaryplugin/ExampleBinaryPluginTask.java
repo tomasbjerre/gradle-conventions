@@ -3,7 +3,9 @@ package se.bjurr.gradle.examples.binaryplugin;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.DisableCachingByDefault;
 
+@DisableCachingByDefault(because = "Just logs a message, has no meaningful outputs to cache")
 public class ExampleBinaryPluginTask extends DefaultTask {
 
   @TaskAction
