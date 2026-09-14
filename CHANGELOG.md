@@ -1,3 +1,22 @@
+## 2.3.0 (2026-09-14)
+
+### Features
+
+-  **ci**  add draft/publish release workflow ([7fc58](https://github.com/tomasbjerre/gradle-conventions/commit/7fc58bb38016189) Tomas Bjerre)  
+
+### Other changes
+
+**Superseded by centralized publish-draft-releases.yaml in .github**
+
+
+[38362](https://github.com/tomasbjerre/gradle-conventions/commit/383627adb428178) Tomas Bjerre *2026-09-14 19:59:03*
+
+**Auto-publish pending draft releases weekly**
+
+
+[8b350](https://github.com/tomasbjerre/gradle-conventions/commit/8b350ae7fc45870) Tomas Bjerre *2026-09-14 19:47:57*
+
+
 ## 2.2.1 (2026-09-13)
 
 ### Bug Fixes
