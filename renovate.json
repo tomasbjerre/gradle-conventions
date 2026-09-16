@@ -1,0 +1,9 @@
+{
+  "packageRules": [
+    {
+      "matchManagers": ["gradle"],
+      "matchPackageNames": ["se.bjurr.*"],
+      "enabled": false
+    }
+  ]
+}
