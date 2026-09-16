@@ -5,9 +5,9 @@ plugins {
 	id "groovy-gradle-plugin"
 	id "com.vanniktech.maven.publish.base" version "0.37.0" apply false
 	id "com.gradle.plugin-publish" version "2.2.1" apply false
-	id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "3.2.0" apply false
+	id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "3.3.0" apply false
 	id "com.diffplug.spotless" version "8.10.2"
-	id "se.bjurr.gradle.update-versions" version "2.0.0"
+	id "se.bjurr.gradle.update-versions" version "3.0.1"
 }
 
 /**
@@ -18,11 +18,11 @@ dependencies {
 	implementation "com.gradleup:gr8-plugin:0.11.2"
 	implementation "com.vanniktech:gradle-maven-publish-plugin:0.37.0"
 	implementation "com.gradle.publish:plugin-publish-plugin:2.2.1"
-	implementation "se.bjurr.gitchangelog:git-changelog-gradle-plugin:3.2.0"
+	implementation "se.bjurr.gitchangelog:git-changelog-gradle-plugin:3.3.0"
 	implementation "se.bjurr.gradle.update-versions:se.bjurr.gradle.update-versions.gradle.plugin:1.7.1"
-	implementation "se.bjurr.violations:violations-lib:2.1.0"
+	implementation "se.bjurr.violations:violations-lib:2.2.0"
 	implementation "com.diffplug.spotless:spotless-plugin-gradle:8.10.2"
-	implementation "se.bjurr.violations:violations-gradle-plugin:4.3.0"
+	implementation "se.bjurr.violations:violations-gradle-plugin:4.4.0"
 	implementation "com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.11"
 }
 
