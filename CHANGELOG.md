@@ -1,3 +1,15 @@
+## 2.4.0 (2026-09-18)
+
+### Features
+
+-  fail if violations in readme is not updated ([4c72b](https://github.com/tomasbjerre/gradle-conventions/commit/4c72baede496d20) Tomas Bjerre)  
+-  fail if violations in readme is not updated ([62227](https://github.com/tomasbjerre/gradle-conventions/commit/622271cfdaf7f74) Tomas Bjerre)  
+
+### Dependency updates
+
+- update actions/setup-node action to v7 (#8) ([3c1e6](https://github.com/tomasbjerre/gradle-conventions/commit/3c1e6c50958b42b) renovate[bot])  
+- update actions/setup-java action to v6 (#7) ([8214b](https://github.com/tomasbjerre/gradle-conventions/commit/8214be766ccb132) renovate[bot])  
+- update actions/checkout action to v7 (#6) ([ab970](https://github.com/tomasbjerre/gradle-conventions/commit/ab97014199360c2) renovate[bot])  
 ## 2.3.1 (2026-09-18)
 
 ### Bug Fixes
