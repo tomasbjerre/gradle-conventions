@@ -1,3 +1,25 @@
+## 2.3.1 (2026-09-18)
+
+### Bug Fixes
+
+-  avoid infinite update loop with se.bjurr tools ([23889](https://github.com/tomasbjerre/gradle-conventions/commit/23889eefb029236) Tomas Bjerre)  
+
+### Dependency updates
+
+- update dependency com.h3xstream.findsecbugs:findsecbugs-plugin to v1.14.0 (#5) ([34615](https://github.com/tomasbjerre/gradle-conventions/commit/34615f4e3398f11) renovate[bot])  
+- update dependencies ([9dbd0](https://github.com/tomasbjerre/gradle-conventions/commit/9dbd0f887a57908) github-actions[bot])  
+- update dependency com.github.spotbugs:spotbugs to v4.10.4 (#3) ([fc463](https://github.com/tomasbjerre/gradle-conventions/commit/fc463e47e34bd4b) renovate[bot])  
+- update dependency com.google.code.gson:gson to v2.14.0 (#4) ([6def6](https://github.com/tomasbjerre/gradle-conventions/commit/6def6d080151523) renovate[bot])  
+- update dependencies ([2d4e3](https://github.com/tomasbjerre/gradle-conventions/commit/2d4e32930b7fb31) github-actions[bot])  
+### Other changes
+
+**Merge pull request #2 from tomasbjerre/tomasbjerre-patch-1**
+
+* fix: avoid infinite update loop with se.bjurr tools 
+
+[991d5](https://github.com/tomasbjerre/gradle-conventions/commit/991d5340c3ece81) Tomas Bjerre *2026-09-16 05:38:08*
+
+
 ## 2.3.0 (2026-09-14)
 
 ### Features
