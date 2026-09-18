@@ -24,8 +24,8 @@ try {
 		String after = Files.readString(readmeFile)
 		if (before != after) {
 			throw new GradleException(
-				"README.md at ${readmeFile.toAbsolutePath()} was not up to date with the list of violations reporters.\n" +
-				"It has now been regenerated locally, please review and commit the changes to README.md."
+			"README.md at was not up to date with the list of violations reporters.\n" +
+			"It has now been regenerated locally, please review and commit the changes to README.md."
 			)
 		}
 	}
