@@ -1,5 +1,9 @@
+import org.gradle.api.GradleException
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+
+import java.nio.file.Files
+import java.nio.file.Path
 
 class UpdateReadmeWithViolationsExtension {
 
@@ -10,8 +14,23 @@ class UpdateReadmeWithViolationsExtension {
 project.extensions.create('updateReadmeWithViolationsExtension', UpdateReadmeWithViolationsExtension, project.objects)
 
 try {
+	Path readmeFile = se.bjurr.violations.lib.util.Utils.findReadmeFile(Path.of("."))
+	String before = readmeFile != null ? Files.readString(readmeFile) : null
+
 	se.bjurr.violations.lib.util.Utils.updateReadmeWithReporters()
 	logger.info("Updated README with list of reporters")
+
+	if (readmeFile != null) {
+		String after = Files.readString(readmeFile)
+		if (before != after) {
+			throw new GradleException(
+				"README.md at ${readmeFile.toAbsolutePath()} was not up to date with the list of violations reporters.\n" +
+				"It has now been regenerated locally, please review and commit the changes to README.md."
+			)
+		}
+	}
+} catch (GradleException e) {
+	throw e
 } catch (e) {
 	logger.info("Not updating README with list of reporters: "+e.getMessage())
 }
