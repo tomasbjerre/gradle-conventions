@@ -124,6 +124,16 @@ tasks.register('commitNewVersionTask') {
 
 tasks.register('commitChangelogTask') {
 	doLast {
+		// `git commit -a` only stages already-tracked files, so on a
+		// project's first-ever release, when CHANGELOG.md is created for
+		// the first time, it stays untracked and silently gets left out of
+		// the commit. Add it explicitly so it is included either way.
+		int addResult = new ProcessBuilder('git', 'add', 'CHANGELOG.md')
+				.directory(project.projectDir)
+				.inheritIO()
+				.start()
+				.waitFor()
+
 		int commitResult = new ProcessBuilder('git', 'commit', '-a', '-m', "chore(release): Updating changelog with ${project.version} [GRADLE SCRIPT]")
 				.directory(project.projectDir)
 				.inheritIO()
@@ -136,6 +146,6 @@ tasks.register('commitChangelogTask') {
 				.start()
 				.waitFor()
 
-		logger.lifecycle("Git commit exit code: ${commitResult}, push exit code: ${pushResult}")
+		logger.lifecycle("Git add exit code: ${addResult}, commit exit code: ${commitResult}, push exit code: ${pushResult}")
 	}
 }
