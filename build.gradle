@@ -21,7 +21,7 @@ dependencies {
 	implementation "se.bjurr.gitchangelog:git-changelog-gradle-plugin:3.4.0"
 	implementation "se.bjurr.gradle.update-versions:se.bjurr.gradle.update-versions.gradle.plugin:1.7.1"
 	implementation "se.bjurr.violations:violations-lib:3.0.0"
-	implementation "com.diffplug.spotless:spotless-plugin-gradle:8.10.2"
+	implementation "com.diffplug.spotless:spotless-plugin-gradle:8.10.3"
 	implementation "se.bjurr.violations:violations-gradle-plugin:4.4.0"
 	implementation "com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.11"
 }
