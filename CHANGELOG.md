@@ -1,3 +1,12 @@
+## 2.4.1 (2026-09-19)
+
+### Bug Fixes
+
+-  **release**  stage CHANGELOG.md before commit so first release isn't dropped ([277f5](https://github.com/tomasbjerre/gradle-conventions/commit/277f550932a211b) Tomas Bjerre)  
+
+### Dependency updates
+
+- update dependency pmd to v7 (#9) ([d1b8c](https://github.com/tomasbjerre/gradle-conventions/commit/d1b8c507c289884) renovate[bot])  
 ## 2.4.0 (2026-09-18)
 
 ### Features
