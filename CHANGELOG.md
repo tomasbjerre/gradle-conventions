@@ -1,3 +1,9 @@
+## 2.4.3 (2026-10-02)
+
+### Bug Fixes
+
+-  make se.bjurr.gradle.pom.gradle Gradle 9.x compatible ([d5045](https://github.com/tomasbjerre/gradle-conventions/commit/d50455d70601cc7) Tomas Bjerre)  
+
 ## 2.4.1 (2026-09-19)
 
 ### Bug Fixes
