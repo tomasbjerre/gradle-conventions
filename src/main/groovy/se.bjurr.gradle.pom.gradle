@@ -63,14 +63,28 @@ class PomExtension {
 project.extensions.create('pomExtension', PomExtension, project.objects)
 
 import org.gradle.api.publish.maven.tasks.GenerateMavenPom
+
 tasks.withType(GenerateMavenPom).configureEach { task ->
 	doFirst {
 		task.pom.withXml {
 			def root = asNode()
-			def websiteUrl = project.extensions.pomExtension.website.get();
-			def vcsUrl = project.extensions.pomExtension.vcsUrl.get();
+
+			// These must be present on every publication, including
+			// Gradle plugin marker publications.
+			if (!root.name.text()) {
+				root.appendNode('name', project.name)
+			}
+
+			if (!root.description.text()) {
+				root.appendNode('description', project.description ?: project.name)
+			}
+
+			def websiteUrl = project.extensions.pomExtension.website.get()
+			def vcsUrl = project.extensions.pomExtension.vcsUrl.get()
+
 			logger.info("Using websiteUrl ${websiteUrl}")
 			logger.info("Using vcsUrl ${vcsUrl}")
+
 			root.appendNode('url', websiteUrl)
 			root.appendNode('inceptionYear', (1900 + new Date().year).toString())
 
@@ -80,6 +94,7 @@ tasks.withType(GenerateMavenPom).configureEach { task ->
 					connection vcsUrl
 					developerConnection vcsUrl
 				}
+
 				licenses {
 					license {
 						name project.extensions.pomExtension.licenseName.get()
