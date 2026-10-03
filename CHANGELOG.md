@@ -1,3 +1,24 @@
+## 2.4.4 (2026-10-03)
+
+### Bug Fixes
+
+-  do not exclude UseDiamondOperator and LambdaCanBeMethodReference ([6b9b8](https://github.com/tomasbjerre/gradle-conventions/commit/6b9b8cc01d3ecc4) Tomas Bjerre)  
+-  update PMD ruleset for PMD 7.27+ rule renames and new rules ([abdcf](https://github.com/tomasbjerre/gradle-conventions/commit/abdcfac3d2a0bdf) Tomas Bjerre)  
+
+### Dependency updates
+
+- update dependency pmd to v7.28.0 (#17) ([9b5cb](https://github.com/tomasbjerre/gradle-conventions/commit/9b5cbcebc1ed435) renovate[bot])  
+- update dependency gradle to v9.8.0 (#16) ([34d57](https://github.com/tomasbjerre/gradle-conventions/commit/34d5758fd3ac841) renovate[bot])  
+- update plugin com.diffplug.spotless to v8.10.3 (#15) ([26421](https://github.com/tomasbjerre/gradle-conventions/commit/26421d840403e06) renovate[bot])  
+### Other changes
+
+**Merge pull request #18 from tomasbjerre/fix/pmd7-ruleset-and-spotbugs-false-positive**
+
+* fix: update PMD ruleset for PMD 7.27+ rule renames and new rules 
+
+[c4b20](https://github.com/tomasbjerre/gradle-conventions/commit/c4b20f81bf68454) Tomas Bjerre *2026-10-03 04:16:17*
+
+
 ## 2.4.3 (2026-10-02)
 
 ### Bug Fixes
