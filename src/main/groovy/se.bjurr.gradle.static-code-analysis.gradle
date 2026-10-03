@@ -176,8 +176,6 @@ task generatePmdRules {
         <exclude name="BooleanGetMethodName"/>
         <exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
         <exclude name="UnnecessaryLocalBeforeReturn"/>
-        <exclude name="UseDiamondOperator"/>
-        <exclude name="LambdaCanBeMethodReference"/>
     </rule>
 
     <rule ref="category/java/design.xml">
