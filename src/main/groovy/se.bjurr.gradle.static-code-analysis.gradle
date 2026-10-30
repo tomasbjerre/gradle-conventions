@@ -20,7 +20,7 @@ project.plugins.apply "pmd"
 
 
 dependencies {
-	spotbugs 'com.github.spotbugs:spotbugs:4.10.4'
+	spotbugs 'com.github.spotbugs:spotbugs:4.10.5'
 	spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
 	compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
 }
