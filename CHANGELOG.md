@@ -1,3 +1,14 @@
+## 2.4.5 (2026-10-30)
+
+### Dependency updates
+
+- update dependency com.google.code.gson:gson to v2.15.0 (#25) ([be703](https://github.com/tomasbjerre/gradle-conventions/commit/be703fd0c791ed0) renovate[bot])  
+- update dependency gradle to v9.8.2 (#24) ([bff46](https://github.com/tomasbjerre/gradle-conventions/commit/bff4621a288608e) renovate[bot])  
+- update dependency com.github.spotbugs.snom:spotbugs-gradle-plugin to v6.5.13 (#23) ([82964](https://github.com/tomasbjerre/gradle-conventions/commit/829648dc0cfc436) renovate[bot])  
+- update dependency com.github.spotbugs:spotbugs to v4.10.5 (#22) ([86d8a](https://github.com/tomasbjerre/gradle-conventions/commit/86d8a892c3dcd77) renovate[bot])  
+- update plugin com.diffplug.spotless to v8.10.4 (#21) ([bfe8f](https://github.com/tomasbjerre/gradle-conventions/commit/bfe8fe191940689) renovate[bot])  
+- update dependency gradle to v9.8.1 (#20) ([2a47a](https://github.com/tomasbjerre/gradle-conventions/commit/2a47ab78d9226f3) renovate[bot])  
+- update dependency com.diffplug.spotless:spotless-plugin-gradle to v8.10.4 (#19) ([0da57](https://github.com/tomasbjerre/gradle-conventions/commit/0da574a8219283d) renovate[bot])  
 ## 2.4.4 (2026-10-03)
 
 ### Bug Fixes
